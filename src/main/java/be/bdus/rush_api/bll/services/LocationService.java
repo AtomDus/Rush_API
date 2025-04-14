@@ -18,4 +18,6 @@ public interface LocationService {
     LocationCompany update(LocationCompany locationCompany, Long id);
 
     void delete(Long id);
+
+    LocationCompany findByName(String name);
 }

@@ -2,6 +2,7 @@ package be.bdus.rush_api.dl.entities;
 
 import be.bdus.rush_api.dl.enums.EquipementCondition;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Date;
@@ -63,4 +64,18 @@ public class Equipement {
     @Setter
     @Column
     private Date dateLastRevision;
+
+    public Equipement(String name, LocationCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, Date acquisitionDate, Date lastRevision) {
+        this.name = name;
+        this.Owner = owner;
+        this.description = description;
+        this.model = model;
+        this.serialNumber = serialNumber;
+        this.type = type;
+        this.condition = condition;
+        this.stock = stock;
+        this.stockagePlace = stockLocation;
+        this.dateAcquisition = acquisitionDate;
+        this.dateLastRevision = lastRevision;
+    }
 }

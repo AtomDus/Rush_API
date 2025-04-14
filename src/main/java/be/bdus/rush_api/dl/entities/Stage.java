@@ -2,6 +2,8 @@ package be.bdus.rush_api.dl.entities;
 
 import be.bdus.rush_api.dl.enums.StageStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -39,4 +41,13 @@ public class Stage {
     @Setter
     @OneToOne
     private User responsable;
+
+    public Stage(String name, String description, Date startingDate, Date finishingDate, StageStatus status, User responsable) {
+        this.name = name;
+        this.description = description;
+        this.startingDate = startingDate;
+        this.finishingDate = finishingDate;
+        this.status = status;
+        this.responsable = responsable;
+    }
 }

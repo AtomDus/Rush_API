@@ -1,5 +1,6 @@
 package be.bdus.rush_api.api.models.equipement.forms;
 
+import be.bdus.rush_api.api.models.company.forms.LCompanyForm;
 import be.bdus.rush_api.dl.entities.Equipement;
 import be.bdus.rush_api.dl.entities.LocationCompany;
 import be.bdus.rush_api.dl.enums.EquipementCondition;
@@ -13,7 +14,7 @@ public record EquipementForm (
         String name,
 
         @NotBlank
-        LocationCompany owner,
+        LCompanyForm owner,
 
         @NotBlank
         String description,
@@ -38,18 +39,10 @@ public record EquipementForm (
 
         Date lastRevision
 ){
-    public static EquipementForm toEquipementForm(Equipement equipement) {
-        return new EquipementForm(
-                equipement.getName(),
-                equipement.getOwner(),
-                equipement.getDescription(),
-                equipement.getModel(),
-                equipement.getSerialNumber(),
-                equipement.getType(),
-                equipement.getCondition(),
-                equipement.getStock(),
-                equipement.getStockagePlace(),
-                equipement.getDateAcquisition(),
-                equipement.getDateLastRevision());
+    public Equipement toEquipement() {
+        LocationCompany company = owner.toCompany();
+        Equipement equipement = new Equipement(name, company, description, model, serialNumber, type, condition, stock, stockLocation, acquisitionDate, lastRevision);
+        return equipement;
     }
+
 }

@@ -56,24 +56,23 @@ public record ProjectForm(
         @NotBlank
         String place
 ) {
-    public static ProjectForm toProject(Project project) {
-        return new ProjectForm(
-                project.getName(),
-                project.getDescription(),
-                project.getStartingDate(),
-                project.getFinishingDate(),
-                project.getStatus(),
-                project.getResponsable(),
-                project.getEmployes(),
-                project.getProductionCompany(),
-                project.getEquipements(),
-                project.getStages(),
-                project.getNbOfStages(),
-                project.getPourcentageDone(),
-                project.getDuration(),
-                project.getBudget(),
-                project.getPlace()
-        );
-
+    public Project toProject() {
+        Project project = new Project(
+                name,
+                description,
+                startingDate,
+                finishingDate,
+                status,
+                responsable,
+                employes,
+                productionCompany,
+                equipements,
+                stages,
+                nbOfStages,
+                pourcentageDone,
+                duration,
+                budget,
+                place);
+        return project;
     }
 }

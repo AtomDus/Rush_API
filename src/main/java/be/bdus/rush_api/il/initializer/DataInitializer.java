@@ -53,7 +53,7 @@ public class DataInitializer implements CommandLineRunner {
             loc1.setZipCode("1000");
             loc1.setCity("Bruxelles");
             loc1.setCountry("Belgique");
-            loc1.setPhoneNumber(321234567);
+            loc1.setPhoneNumber("321234567");
             loc1.setEmail("contact@locapro.com");
 
             locationCompanyRepository.save(loc1);
@@ -68,7 +68,7 @@ public class DataInitializer implements CommandLineRunner {
             prod.setZipCode("75000");
             prod.setCity("Paris");
             prod.setCountry("France");
-            prod.setPhoneNumber(339876543);
+            prod.setPhoneNumber("339876543");
             prod.setEmail("info@prodx.com");
 
             productionCompanyRepository.save(prod);

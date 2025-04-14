@@ -35,9 +35,19 @@ public class ProductionCompany {
 
     @Setter
     @Column(nullable = false)
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Setter
     @Column(nullable = false)
     private String email;
+
+    public ProductionCompany(String name, String address, String zipCode, String city, String country, String phoneNumber, String email) {
+        this.name = name;
+        this.address = address;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 }

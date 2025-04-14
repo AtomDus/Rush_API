@@ -10,7 +10,7 @@ public record CompanyDTO (
         String zipCode,
         String city,
         String country,
-        int phoneNumber,
+        String phoneNumber,
         String email
 ) {
     public static CompanyDTO fromCompany(LocationCompany company) {

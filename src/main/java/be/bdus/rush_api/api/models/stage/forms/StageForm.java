@@ -27,13 +27,9 @@ public record StageForm(
         @NotNull
         User responsable
 ) {
-    public static StageForm toStage(Stage stage) {
-        return new StageForm(
-                stage.getName(),
-                stage.getDescription(),
-                stage.getStartingDate(),
-                stage.getFinishingDate(),
-                stage.getStatus(),
-                stage.getResponsable());
+    public  Stage toStage() {
+        Stage stage = new Stage(name, description, startingDate, finishingDate, status, responsable);
+        return stage;
     }
+
 }

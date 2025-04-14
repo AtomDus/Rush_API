@@ -4,7 +4,7 @@ import be.bdus.rush_api.dl.entities.LocationCompany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CompanyForm (
+public record LCompanyForm(
         @NotBlank
         String name,
 
@@ -21,19 +21,13 @@ public record CompanyForm (
         String country,
 
         @NotNull
-        int phoneNumber,
+        String phoneNumber,
 
         @NotBlank
         String email
 ) {
-    public static CompanyForm toCompany(LocationCompany company) {
-        return new CompanyForm(
-                company.getName(),
-                company.getAddress(),
-                company.getZipCode(),
-                company.getCity(),
-                company.getCountry(),
-                company.getPhoneNumber(),
-                company.getEmail());
+    public LocationCompany toCompany() {
+        LocationCompany company = new LocationCompany(name, address, zipCode, city, country, phoneNumber, email);
+        return company;
     }
 }
