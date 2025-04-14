@@ -24,18 +24,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public Page<Project> findAll(List<SearchParam<Project>> searchParams, Pageable pageable) {
-        if (searchParams.isEmpty()) {
-            return projectRepository.findAll(pageable);
-        }
-        return projectRepository.findAll(
-                Specification.allOf(
-                        searchParams.stream()
-                                .map(SearchSpecification::search)
-                                .toList()
-                ),
-                pageable
-        );
+    public Page<Project> findAll(Pageable pageable) {
+        return projectRepository.findAll(pageable);
     }
 
     @Override

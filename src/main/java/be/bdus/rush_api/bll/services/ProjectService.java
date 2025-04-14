@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProjectService {
 
-    Page<Project> findAll(List<SearchParam<Project>> searchParams, Pageable pageable);
+    Page<Project> findAll(Pageable pageable);
 
     Project findById(Long id);
 
