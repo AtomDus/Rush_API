@@ -1,0 +1,8 @@
+package be.bdus.rush_api.dal.repositories;
+
+import be.bdus.rush_api.dl.entities.LocationCompany;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface LCompanyRepository extends JpaRepository<LocationCompany, Long>, JpaSpecificationExecutor<LocationCompany> {
+}

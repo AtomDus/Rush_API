@@ -1,0 +1,40 @@
+package be.bdus.rush_api.api.models.equipement.dtos;
+
+import be.bdus.rush_api.dl.entities.Equipement;
+import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dl.enums.EquipementCondition;
+
+import java.util.Date;
+
+public record EquipementDTO(
+    Long id,
+    String name,
+    LocationCompany owner,
+    String description,
+    String model,
+    String serialNumber,
+    String type,
+    EquipementCondition condition,
+    int stock,
+    String stockage,
+    Date acquisitionDate,
+    Date lastRevision
+) {
+
+    public static EquipementDTO fromEquipement(Equipement equipement) {
+        return new EquipementDTO(
+            equipement.getId(),
+            equipement.getName(),
+            equipement.getOwner(),
+            equipement.getDescription(),
+            equipement.getModel(),
+            equipement.getSerialNumber(),
+            equipement.getType(),
+            equipement.getCondition(),
+            equipement.getStock(),
+            equipement.getStockagePlace(),
+            equipement.getDateAcquisition(),
+            equipement.getDateLastRevision()
+        );
+    }
+}
