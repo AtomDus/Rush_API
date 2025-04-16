@@ -23,7 +23,7 @@ public class Equipement {
 
     @Setter
     @ManyToOne
-    private LocationCompany Owner;
+    private LocationCompany owner;
 
     @Setter
     @Column(nullable = false, length = 200)
@@ -67,7 +67,7 @@ public class Equipement {
 
     public Equipement(String name, LocationCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, Date acquisitionDate, Date lastRevision) {
         this.name = name;
-        this.Owner = owner;
+        this.owner = owner;
         this.description = description;
         this.model = model;
         this.serialNumber = serialNumber;
@@ -78,4 +78,6 @@ public class Equipement {
         this.dateAcquisition = acquisitionDate;
         this.dateLastRevision = lastRevision;
     }
+
+
 }

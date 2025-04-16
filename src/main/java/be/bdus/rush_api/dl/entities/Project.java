@@ -41,7 +41,8 @@ public class Project {
     private StageStatus status;
 
     @Setter
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "responsable_id")
     private User responsable;
 
     @Setter
@@ -55,6 +56,10 @@ public class Project {
     @Setter
     @ManyToMany
     private List<Equipement> equipements;
+
+    @Setter
+    @ManyToMany
+    private List<LocationCompany> locationCompanies;
 
     @Setter
     @ManyToMany
@@ -99,4 +104,5 @@ public class Project {
         this.budget = budget;
         this.place = place;
     }
+
 }

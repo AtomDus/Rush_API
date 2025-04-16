@@ -7,9 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LocationService {
-    Page<LocationCompany> findAll(List<SearchParam<LocationCompany>> searchParams, Pageable pageable);
+    Page<LocationCompany> findAll(Pageable pageable);
 
     LocationCompany findById(Long id);
 
@@ -19,5 +20,7 @@ public interface LocationService {
 
     void delete(Long id);
 
-    LocationCompany findByName(String name);
+    Optional<LocationCompany> findByName(String name);
+
+    Page<LocationCompany> findByProjectsId(Pageable pageable, Long id);
 }

@@ -16,7 +16,7 @@ public record UserDTO(
         EmployeStatus status,
         UserRole role
 ) {
-    public static UserDTO toRecord(User user) {
+    public static UserDTO fromUser(User user) {
         return new UserDTO(
                 user.getId(),
                 user.getLastname(),

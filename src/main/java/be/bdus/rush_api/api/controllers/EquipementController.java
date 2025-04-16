@@ -50,7 +50,7 @@ public class EquipementController {
     }
 
     @Operation(summary = "Listing equipements by serial number", description = "Let the user search an equipement with its serial number")
-    @GetMapping("/serialNumber")
+    @GetMapping("/serialNumber/{serialNumber}")
     public ResponseEntity<EquipementDTO> getBySerialNumber(@RequestParam String serialNumber) {
         Equipement equipement = equipementService.findBySerialNumber(serialNumber);
         return ResponseEntity.ok(EquipementDTO.fromEquipement(equipement));

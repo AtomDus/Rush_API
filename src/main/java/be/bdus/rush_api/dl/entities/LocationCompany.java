@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode @ToString
 @Getter
@@ -41,6 +43,14 @@ public class LocationCompany {
     @Setter
     @Column(nullable = false)
     private String email;
+
+    @ManyToMany
+    @JoinTable(
+            name = "location_company_project",
+            joinColumns = @JoinColumn(name = "location_company_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private List<Project> projects;
 
     public LocationCompany(String name, String address, String zipCode, String city, String country, String phoneNumber, String email) {
         this.name = name;

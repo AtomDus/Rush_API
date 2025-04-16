@@ -52,9 +52,10 @@ public class EquipementServiceImpl implements EquipementService {
         LocationCompany owner = equipement.getOwner();
 
         if (owner != null && owner.getName() != null) {
-            LocationCompany existingOwner = locationService.findByName(owner.getName());
-            if (existingOwner != null) {
-                equipement.setOwner(existingOwner);
+            Optional<LocationCompany> existingOwnerOpt = locationService.findByName(owner.getName());
+
+            if (existingOwnerOpt.isPresent()) {
+                equipement.setOwner(existingOwnerOpt.get());
             } else {
                 equipement.setOwner(locationService.save(owner));
             }
@@ -82,9 +83,10 @@ public class EquipementServiceImpl implements EquipementService {
 
         LocationCompany owner = equipement.getOwner();
         if (owner != null && owner.getName() != null) {
-            LocationCompany existingOwner = locationService.findByName(owner.getName());
-            if (existingOwner != null) {
-                updatedEquipement.setOwner(existingOwner);
+            Optional<LocationCompany> existingOwnerOpt = locationService.findByName(owner.getName());
+
+            if (existingOwnerOpt.isPresent()) {
+                updatedEquipement.setOwner(existingOwnerOpt.get());
             } else {
                 updatedEquipement.setOwner(locationService.save(owner));
             }

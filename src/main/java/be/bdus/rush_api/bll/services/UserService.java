@@ -1,17 +1,14 @@
-package be.bdus.rush_api.dal.repositories;
-
+package be.bdus.rush_api.bll.services;
 
 import be.bdus.rush_api.dl.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserService {
 
-    boolean existsByEmail(String email);
+    Optional<User> findById(Long id);
 
     Optional<User> findByEmail(String email);
 

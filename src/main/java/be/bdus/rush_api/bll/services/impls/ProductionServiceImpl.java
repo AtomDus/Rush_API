@@ -23,23 +23,18 @@ public class ProductionServiceImpl implements ProductionService {
     private final PCompanyRepository productionRepository;
 
     @Override
-    public Page<ProductionCompany> findAll(List<SearchParam<ProductionCompany>> searchParams, Pageable pageable) {
-        if (searchParams.isEmpty()) {
-            return productionRepository.findAll(pageable);
-        }
-        return productionRepository.findAll(
-                Specification.allOf(
-                        searchParams.stream()
-                                .map(SearchSpecification::search)
-                                .toList()
-                ),
-                pageable
-        );
+    public Page<ProductionCompany> findAll(Pageable pageable) {
+        return productionRepository.findAll(pageable);
     }
 
     @Override
     public ProductionCompany findById(Long id) {
         return productionRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found"));
+    }
+
+    @Override
+    public Optional<ProductionCompany> findByName(String name) {
+        return productionRepository.findByName(name);
     }
 
     @Override

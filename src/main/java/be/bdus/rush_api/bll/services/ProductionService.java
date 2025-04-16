@@ -6,12 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductionService {
 
-    Page<ProductionCompany> findAll(List<SearchParam<ProductionCompany>> searchParams, Pageable pageable);
+    Page<ProductionCompany> findAll(Pageable pageable);
 
     ProductionCompany findById(Long id);
+
+    Optional<ProductionCompany> findByName(String name);
 
     ProductionCompany save(ProductionCompany productionCompany);
 

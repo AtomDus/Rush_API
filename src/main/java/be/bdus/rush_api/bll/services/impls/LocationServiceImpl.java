@@ -24,18 +24,8 @@ public class LocationServiceImpl implements LocationService {
     private final LCompanyRepository locationRepository;
 
     @Override
-    public Page<LocationCompany> findAll(List<SearchParam<LocationCompany>> searchParams, Pageable pageable) {
-        if (searchParams.isEmpty()) {
-            return locationRepository.findAll(pageable);
-        }
-        return locationRepository.findAll(
-                Specification.allOf(
-                        searchParams.stream()
-                                .map(SearchSpecification::search)
-                                .toList()
-                ),
-                pageable
-        );
+    public Page<LocationCompany> findAll(Pageable pageable) {
+        return locationRepository.findAll(pageable);
     }
 
     @Override
@@ -71,7 +61,12 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationCompany findByName(String name) {
-        return locationRepository.findByName(name).orElse(null);
+    public Optional<LocationCompany> findByName(String name) {
+        return locationRepository.findByName(name);
+    }
+
+    @Override
+    public Page<LocationCompany> findByProjectsId(Pageable pageable, Long id) {
+        return locationRepository.findByProjectsId(id, pageable);
     }
 }

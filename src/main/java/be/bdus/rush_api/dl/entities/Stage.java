@@ -19,7 +19,7 @@ public class Stage {
     private Long id;
 
     @Setter
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Setter
@@ -39,7 +39,8 @@ public class Stage {
     private StageStatus status;
 
     @Setter
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "responsable_id")
     private User responsable;
 
     public Stage(String name, String description, Date startingDate, Date finishingDate, StageStatus status, User responsable) {

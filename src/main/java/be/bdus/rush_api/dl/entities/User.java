@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @NoArgsConstructor@AllArgsConstructor
 @EqualsAndHashCode@ToString
 @Getter
@@ -39,6 +41,14 @@ public class User {
     @Setter
     @Column(nullable = false)
     private String jobTitle;
+
+    @Setter
+    @OneToMany
+    private List<ProductionCompany> productionCompanies;
+
+    @Setter
+    @OneToMany
+    private List<Project> projects;
 
     @Setter
     @Column(nullable = false)
