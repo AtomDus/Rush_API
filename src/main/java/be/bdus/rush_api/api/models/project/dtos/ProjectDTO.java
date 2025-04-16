@@ -3,6 +3,7 @@ package be.bdus.rush_api.api.models.project.dtos;
 import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +11,8 @@ public record ProjectDTO (
         Long id,
         String name,
         String description,
-        Date startingDate,
-        Date finishingDate,
+        LocalDate startingDate,
+        LocalDate finishingDate,
         StageStatus status,
         User responsable,
         List<User> employes,

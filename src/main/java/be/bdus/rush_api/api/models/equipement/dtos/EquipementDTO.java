@@ -4,6 +4,7 @@ import be.bdus.rush_api.dl.entities.Equipement;
 import be.bdus.rush_api.dl.entities.LocationCompany;
 import be.bdus.rush_api.dl.enums.EquipementCondition;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record EquipementDTO(
@@ -17,8 +18,8 @@ public record EquipementDTO(
     EquipementCondition condition,
     int stock,
     String stockage,
-    Date acquisitionDate,
-    Date lastRevision
+    LocalDate acquisitionDate,
+    LocalDate lastRevision
 ) {
 
     public static EquipementDTO fromEquipement(Equipement equipement) {

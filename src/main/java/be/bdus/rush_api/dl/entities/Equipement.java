@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -59,13 +60,13 @@ public class Equipement {
 
     @Setter
     @Column
-    private Date dateAcquisition;
+    private LocalDate dateAcquisition;
 
     @Setter
     @Column
-    private Date dateLastRevision;
+    private LocalDate dateLastRevision;
 
-    public Equipement(String name, LocationCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, Date acquisitionDate, Date lastRevision) {
+    public Equipement(String name, LocationCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, LocalDate acquisitionDate, LocalDate lastRevision) {
         this.name = name;
         this.owner = owner;
         this.description = description;

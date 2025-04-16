@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +31,11 @@ public class Project {
 
     @Setter
     @Column
-    private Date startingDate;
+    private LocalDate startingDate;
 
     @Setter
     @Column
-    private Date finishingDate;
+    private LocalDate finishingDate;
 
     @Setter
     @Column(nullable = false)
@@ -85,7 +86,7 @@ public class Project {
     @Column
     private String place;
 
-    public Project(String name, String description, Date startingDate, Date finishingDate, StageStatus status, User responsable,
+    public Project(String name, String description, LocalDate startingDate, LocalDate finishingDate, StageStatus status, User responsable,
                    List<User> employes, ProductionCompany productionCompany, List<Equipement> equipements, List<Stage> stages,
                    int nbOfStages, double pourcentageDone, int duration, int budget, String place) {
         this.name = name;

@@ -2,19 +2,14 @@ package be.bdus.rush_api.bll.services.impls;
 
 import be.bdus.rush_api.bll.services.LocationService;
 import be.bdus.rush_api.dal.repositories.LCompanyRepository;
-import be.bdus.rush_api.dl.entities.Equipement;
 import be.bdus.rush_api.dl.entities.LocationCompany;
-import be.bdus.rush_api.il.request.SearchParam;
-import be.bdus.rush_api.il.specifications.SearchSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,7 +47,7 @@ public class LocationServiceImpl implements LocationService {
         updatedLocation.setCountry(locationCompany.getCountry());
         updatedLocation.setPhoneNumber(locationCompany.getPhoneNumber());
         updatedLocation.setEmail(locationCompany.getEmail());
-        return locationRepository.save(locationCompany);
+        return locationRepository.save(updatedLocation);
     }
 
     @Override

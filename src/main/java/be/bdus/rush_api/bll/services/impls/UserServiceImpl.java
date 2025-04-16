@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,5 +35,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findByJobTitle(Pageable pageable, String jobTitle) {
         return userRepository.findByJobTitle(pageable, jobTitle);
+    }
+
+    public List<User> findAvailableUsers() {
+        return userRepository.findByAvailableTrue();
     }
 }

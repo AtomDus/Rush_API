@@ -24,4 +24,5 @@ public interface EquipementService {
 
     Equipement update(Equipement equipement, Long id);
 
+    List<Equipement> findEquipementsToRevise();
 }

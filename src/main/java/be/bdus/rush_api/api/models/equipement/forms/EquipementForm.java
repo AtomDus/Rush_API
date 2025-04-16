@@ -6,6 +6,7 @@ import be.bdus.rush_api.dl.entities.LocationCompany;
 import be.bdus.rush_api.dl.enums.EquipementCondition;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record EquipementForm (
@@ -35,9 +36,9 @@ public record EquipementForm (
         @NotBlank
         String stockLocation,
 
-        Date acquisitionDate,
+        LocalDate acquisitionDate,
 
-        Date lastRevision
+        LocalDate lastRevision
 ){
     public Equipement toEquipement() {
         LocationCompany company = owner.toCompany();

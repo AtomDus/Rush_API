@@ -56,7 +56,7 @@ public class ProductionServiceImpl implements ProductionService {
         updatedProductionCompany.setCountry(productionCompany.getCountry());
         updatedProductionCompany.setPhoneNumber(productionCompany.getPhoneNumber());
         updatedProductionCompany.setEmail(productionCompany.getEmail());
-        return productionRepository.save(productionCompany);
+        return productionRepository.save(updatedProductionCompany);
     }
 
     @Override

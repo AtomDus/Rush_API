@@ -2,19 +2,16 @@ package be.bdus.rush_api.bll.services.impls;
 
 import be.bdus.rush_api.bll.services.ProjectService;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
-import be.bdus.rush_api.dl.entities.ProductionCompany;
 import be.bdus.rush_api.dl.entities.Project;
-import be.bdus.rush_api.il.request.SearchParam;
-import be.bdus.rush_api.il.specifications.SearchSpecification;
+import be.bdus.rush_api.dl.enums.StageStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -66,5 +63,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void delete(Long id) {
         projectRepository.deleteById(id);
+    }
+
+    public Project updateProjectStatus(Long id) {
+        Project project = findById(id);
+        if (project.getFinishingDate().isBefore(LocalDate.now()) && !project.getStatus().equals("Completed")) {
+            project.setStatus(StageStatus.CLOSED);
+            projectRepository.save(project);
+        }
+        return project;
     }
 }
