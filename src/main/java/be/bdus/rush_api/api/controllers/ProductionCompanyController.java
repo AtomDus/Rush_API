@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/production-companies")
 
+@CrossOrigin("*")
 @Tag(name = "production", description = "Endpoints use for production company")
 public class ProductionCompanyController {
 

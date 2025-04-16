@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/projects")
 
+@CrossOrigin("*")
 @Tag(name = "project", description = "Endpoints use for projects")
 public class ProjectController {
 

@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/location")
 
+@CrossOrigin("*")
 @Tag(name = "location", description = "Endpoints use for location company")
 public class LocationCompanyController {
 

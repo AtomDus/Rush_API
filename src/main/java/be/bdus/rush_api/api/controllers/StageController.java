@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/stages")
 
+@CrossOrigin("*")
 @Tag(name = "Stages", description = "Endpoints use for managing stages")
 public class StageController {
 

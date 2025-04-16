@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/equipements")
 
+@CrossOrigin("*")
 @Tag(name = "equipements", description = "Endpoints use for equipements")
 public class EquipementController {
 
