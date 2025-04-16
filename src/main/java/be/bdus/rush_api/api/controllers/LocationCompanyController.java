@@ -2,6 +2,7 @@ package be.bdus.rush_api.api.controllers;
 
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.company.dtos.CompanyDTO;
+import be.bdus.rush_api.api.models.company.forms.LCompanyForm;
 import be.bdus.rush_api.bll.services.LocationService;
 import be.bdus.rush_api.dl.entities.LocationCompany;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,8 +79,8 @@ public class LocationCompanyController {
 
     @Operation(summary = "Adding a new company", description = "Use to add a new company")
     @PostMapping("/add")
-    public ResponseEntity<CompanyDTO> save(@RequestBody LocationCompany locationCompany) {
-        return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.save(locationCompany)));
+    public ResponseEntity<CompanyDTO> save(@RequestBody LCompanyForm locationCompany) {
+        return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.save(locationCompany.toCompany())));
     }
 
     @Operation(summary = "Deleting a company", description = "Use to delete a company")
@@ -91,8 +92,8 @@ public class LocationCompanyController {
 
     @Operation(summary = "Updating a company", description = "Use to update a company")
     @PutMapping("/update/{id}")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody LocationCompany locationCompany) {
-        return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.update(locationCompany, id)));
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody LCompanyForm locationCompany) {
+        return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.update(locationCompany.toCompany(), id)));
     }
 
 }

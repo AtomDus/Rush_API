@@ -2,6 +2,7 @@ package be.bdus.rush_api.api.controllers;
 
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.company.dtos.CompanyDTO;
+import be.bdus.rush_api.api.models.company.forms.PCompanyForm;
 import be.bdus.rush_api.bll.services.ProductionService;
 import be.bdus.rush_api.dl.entities.ProductionCompany;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,8 +59,8 @@ public class ProductionCompanyController {
 
     @Operation(summary = "adding a production company", description = "Use to add a production company")
     @PostMapping("/add")
-    public ResponseEntity<CompanyDTO> save(@RequestBody ProductionCompany productionCompany) {
-        return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.save(productionCompany)));
+    public ResponseEntity<CompanyDTO> save(@RequestBody PCompanyForm productionCompany) {
+        return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.save(productionCompany.toCompany())));
     }
 
     @Operation(summary = "deleting a production company", description = "Use to delete a production company")
@@ -71,7 +72,7 @@ public class ProductionCompanyController {
 
     @Operation(summary = "updating a production company", description = "Use to update a production company")
     @PutMapping("/update/{id}")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody ProductionCompany productionCompany) {
-        return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.update(productionCompany, id)));
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody PCompanyForm productionCompany) {
+        return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.update(productionCompany.toCompany(), id)));
     }
 }

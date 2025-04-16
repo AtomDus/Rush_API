@@ -3,6 +3,7 @@ package be.bdus.rush_api.api.controllers;
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.equipement.dtos.EquipementDTO;
 import be.bdus.rush_api.api.models.project.dtos.ProjectDTO;
+import be.bdus.rush_api.api.models.project.forms.ProjectForm;
 import be.bdus.rush_api.bll.services.ProjectService;
 import be.bdus.rush_api.dl.entities.Equipement;
 import be.bdus.rush_api.dl.entities.Project;
@@ -51,14 +52,14 @@ public class ProjectController {
 
     @Operation(summary = "Adding a project", description = "Use to add a project")
     @PostMapping("/add")
-    public ResponseEntity<ProjectDTO> save(@RequestBody Project project) {
-        return ResponseEntity.ok(ProjectDTO.fromProject(projectService.save(project)));
+    public ResponseEntity<ProjectDTO> save(@RequestBody ProjectForm project) {
+        return ResponseEntity.ok(ProjectDTO.fromProject(projectService.save(project.toProject())));
     }
 
     @Operation(summary = "Updating a project", description = "Use to update a project")
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> update(@PathVariable Long id, @RequestBody Project project) {
-        Project updatedProject = projectService.update(project, id);
+    public ResponseEntity<ProjectDTO> update(@PathVariable Long id, @RequestBody ProjectForm project) {
+        Project updatedProject = projectService.update(project.toProject(), id);
         return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
     }
 

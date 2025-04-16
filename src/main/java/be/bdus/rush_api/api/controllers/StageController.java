@@ -3,6 +3,7 @@ package be.bdus.rush_api.api.controllers;
 
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.stage.dtos.StageDTO;
+import be.bdus.rush_api.api.models.stage.forms.StageForm;
 import be.bdus.rush_api.bll.services.StageService;
 import be.bdus.rush_api.dl.entities.Stage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,14 +51,14 @@ public class StageController {
 
     @Operation(summary = "Adding a stage", description = "Use to add a stage")
     @PostMapping("/add")
-    public ResponseEntity<StageDTO> save(@RequestBody Stage stage) {
-        return ResponseEntity.ok(StageDTO.fromStage(stageService.save(stage)));
+    public ResponseEntity<StageDTO> save(@RequestBody StageForm stage) {
+        return ResponseEntity.ok(StageDTO.fromStage(stageService.save(stage.toStage())));
     }
 
     @Operation(summary = "Updating a stage", description = "Use to update a stage")
     @PutMapping("/update/{id}")
-    public ResponseEntity<StageDTO> update(@RequestBody Stage stage, @PathVariable Long id) {
-        return ResponseEntity.ok(StageDTO.fromStage(stageService.update(stage, id)));
+    public ResponseEntity<StageDTO> update(@RequestBody StageForm stage, @PathVariable Long id) {
+        return ResponseEntity.ok(StageDTO.fromStage(stageService.update(stage.toStage(), id)));
     }
 
     @Operation(summary = "Deleting a stage", description = "Use to delete a stage")
