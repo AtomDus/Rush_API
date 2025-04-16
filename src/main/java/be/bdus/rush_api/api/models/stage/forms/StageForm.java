@@ -6,6 +6,7 @@ import be.bdus.rush_api.dl.enums.StageStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record StageForm(
@@ -16,10 +17,10 @@ public record StageForm(
         String description,
 
         @NotNull
-        Date startingDate,
+        LocalDate startingDate,
 
         @NotNull
-        Date finishingDate,
+        LocalDate finishingDate,
 
         @NotNull
         StageStatus status,

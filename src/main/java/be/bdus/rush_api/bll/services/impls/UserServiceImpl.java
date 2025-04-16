@@ -40,4 +40,14 @@ public class UserServiceImpl implements UserService {
     public List<User> findAvailableUsers() {
         return userRepository.findByAvailableTrue();
     }
+
+    public boolean setUserAvailable(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            user.get().setAvailable(true);
+            userRepository.save(user.get());
+            return true;
+        }
+        return false;
+    }
 }

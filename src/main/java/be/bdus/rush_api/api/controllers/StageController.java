@@ -2,7 +2,9 @@ package be.bdus.rush_api.api.controllers;
 
 
 import be.bdus.rush_api.api.models.CustomPage;
+import be.bdus.rush_api.api.models.stage.dtos.StageCreationDTO;
 import be.bdus.rush_api.api.models.stage.dtos.StageDTO;
+import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageForm;
 import be.bdus.rush_api.bll.services.StageService;
 import be.bdus.rush_api.dl.entities.Stage;
@@ -52,8 +54,9 @@ public class StageController {
 
     @Operation(summary = "Adding a stage", description = "Use to add a stage")
     @PostMapping("/add")
-    public ResponseEntity<StageDTO> save(@RequestBody StageForm stage) {
-        return ResponseEntity.ok(StageDTO.fromStage(stageService.save(stage.toStage())));
+    public ResponseEntity<StageDTO> save(@RequestBody StageCreationForm stageForm) {
+        Stage savedStage = stageService.saveFromForm(stageForm);
+        return ResponseEntity.ok(StageDTO.fromStage(savedStage));
     }
 
     @Operation(summary = "Updating a stage", description = "Use to update a stage")

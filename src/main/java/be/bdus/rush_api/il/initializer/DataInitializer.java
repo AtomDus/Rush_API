@@ -9,6 +9,7 @@ import be.bdus.rush_api.dl.enums.UserRole;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -111,8 +112,8 @@ public class DataInitializer implements CommandLineRunner {
                     EquipementCondition.NEW,
                     5,
                     "Entrepôt A",
-                    new Date(),
-                    new Date()
+                    LocalDate.of(2025, 4, 16),
+                    LocalDate.of(2025, 4, 16)
             );
 
             Equipement eq2 = new Equipement(
@@ -125,8 +126,8 @@ public class DataInitializer implements CommandLineRunner {
                     EquipementCondition.GOOD,
                     3,
                     "Entrepôt B",
-                    new Date(),
-                    new Date()
+                    LocalDate.of(2025, 4, 16),
+                    LocalDate.of(2025, 4, 16)
             );
 
             Equipement eq3 = new Equipement(
@@ -139,8 +140,8 @@ public class DataInitializer implements CommandLineRunner {
                     EquipementCondition.NEW,
                     2,
                     "Entrepôt A",
-                    new Date(),
-                    new Date()
+                    LocalDate.of(2025, 4, 16),
+                    LocalDate.of(2025, 4, 16)
             );
 
             equipementRepository.saveAll(List.of(eq1, eq2, eq3));
@@ -159,7 +160,7 @@ public class DataInitializer implements CommandLineRunner {
             Project p1 = new Project();
             p1.setName("Project Cinéma");
             p1.setDescription("Tournage d'un court-métrage.");
-            p1.setStartingDate(new Date());
+            p1.setStartingDate(LocalDate.of(2025, 4, 16));
             p1.setStatus(StageStatus.OPEN);
             p1.setResponsable(responsable);
             p1.setEmployes(employes);
@@ -175,13 +176,13 @@ public class DataInitializer implements CommandLineRunner {
             Stage s1 = new Stage();
             s1.setName("Préparation Matériel");
             s1.setDescription("Vérification et préparation du matériel.");
-            s1.setStartingDate(new Date());
+            s1.setStartingDate(LocalDate.of(2025, 4, 16));
             s1.setStatus(StageStatus.IN_PROGRESS);
             s1.setResponsable(users.get(0));
             Stage s2 = new Stage();
             s2.setName("Tournage");
             s2.setDescription("Tournage du film.");
-            s2.setStartingDate(new Date());
+            s2.setStartingDate(LocalDate.of(2025, 4, 16));
             s2.setStatus(StageStatus.OPEN);
             s2.setResponsable(users.get(1));
 
@@ -190,7 +191,7 @@ public class DataInitializer implements CommandLineRunner {
             Project p2 = new Project();
             p2.setName("Project Documentaire");
             p2.setDescription("Tournage d'un documentaire.");
-            p2.setStartingDate(new Date());
+            p2.setStartingDate(LocalDate.of(2025, 4, 16));
             p2.setStatus(StageStatus.OPEN);
             p2.setResponsable(responsable);
             p2.setEmployes(employes);
@@ -206,13 +207,13 @@ public class DataInitializer implements CommandLineRunner {
             Stage s3 = new Stage();
             s3.setName("Préparation Matériel");
             s3.setDescription("Vérification et préparation du matériel.");
-            s3.setStartingDate(new Date());
+            s3.setStartingDate(LocalDate.of(2025, 4, 16));
             s3.setStatus(StageStatus.IN_PROGRESS);
             s3.setResponsable(users.get(0));
             Stage s4 = new Stage();
             s4.setName("Tournage");
             s4.setDescription("Tournage du film.");
-            s4.setStartingDate(new Date());
+            s4.setStartingDate(LocalDate.of(2025, 4, 16));
             s4.setStatus(StageStatus.OPEN);
             s4.setResponsable(users.get(1));
 

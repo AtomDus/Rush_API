@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -28,11 +29,11 @@ public class Stage {
 
     @Setter
     @Column
-    private Date startingDate;
+    private LocalDate startingDate;
 
     @Setter
     @Column
-    private Date finishingDate;
+    private LocalDate finishingDate;
 
     @Setter
     @Column(nullable = false)
@@ -43,7 +44,11 @@ public class Stage {
     @JoinColumn(name = "responsable_id")
     private User responsable;
 
-    public Stage(String name, String description, Date startingDate, Date finishingDate, StageStatus status, User responsable) {
+    @Setter
+    @ManyToOne
+    private Project project;
+
+    public Stage(String name, String description, LocalDate startingDate, LocalDate finishingDate, StageStatus status, User responsable) {
         this.name = name;
         this.description = description;
         this.startingDate = startingDate;

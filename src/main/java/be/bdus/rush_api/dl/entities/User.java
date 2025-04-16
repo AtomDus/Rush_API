@@ -3,8 +3,6 @@ package be.bdus.rush_api.dl.entities;
 import be.bdus.rush_api.dl.enums.EmployeStatus;
 import be.bdus.rush_api.dl.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -52,7 +50,7 @@ public class User {
 
     @Setter
     @Column(nullable = false)
-    private boolean isAvailable = true;
+    private boolean available = true;
 
     @Setter
     @Column(nullable = false)
@@ -73,7 +71,7 @@ public class User {
         this(firstname, lastname, email, password);
         this.phoneNumber = phoneNumber;
         this.jobTitle = jobTitle;
-        this.isAvailable = isAvailable;
+        this.available = isAvailable;
         this.status = status;
     }
 }
