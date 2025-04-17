@@ -1,7 +1,7 @@
 package be.bdus.rush_api.bll.services.impls;
 
-import be.bdus.rush_api.dal.repositories.LCompanyRepository;
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dal.repositories.RCompanyRepository;
+import be.bdus.rush_api.dl.entities.RentingCompany;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -19,21 +19,21 @@ import static org.mockito.Mockito.*;
 
 class LocationServiceImplTest {
 
-    private LCompanyRepository locationRepository;
-    private LocationServiceImpl locationService;
+    private RCompanyRepository locationRepository;
+    private RentingServiceImpl locationService;
 
     @BeforeEach
     void setUp() {
-        locationRepository = mock(LCompanyRepository.class);
-        locationService = new LocationServiceImpl(locationRepository);
+        locationRepository = mock(RCompanyRepository.class);
+        locationService = new RentingServiceImpl(locationRepository);
     }
 
     @Test
     void testFindAll() {
-        Page<LocationCompany> page = new PageImpl<>(List.of(new LocationCompany()));
+        Page<RentingCompany> page = new PageImpl<>(List.of(new RentingCompany()));
         when(locationRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<LocationCompany> result = locationService.findAll(Pageable.unpaged());
+        Page<RentingCompany> result = locationService.findAll(Pageable.unpaged());
 
         assertEquals(1, result.getTotalElements());
         verify(locationRepository).findAll(any(Pageable.class));
@@ -41,11 +41,11 @@ class LocationServiceImplTest {
 
     @Test
     void testFindById_Found() {
-        LocationCompany location = new LocationCompany();
+        RentingCompany location = new RentingCompany();
         ReflectionTestUtils.setField(location, "id", 1L);
         when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
 
-        LocationCompany result = locationService.findById(1L);
+        RentingCompany result = locationService.findById(1L);
 
         assertNotNull(result);
         assertEquals(1L, ReflectionTestUtils.getField(result, "id"));
@@ -61,10 +61,10 @@ class LocationServiceImplTest {
 
     @Test
     void testSave() {
-        LocationCompany location = new LocationCompany();
+        RentingCompany location = new RentingCompany();
         when(locationRepository.save(location)).thenReturn(location);
 
-        LocationCompany saved = locationService.save(location);
+        RentingCompany saved = locationService.save(location);
 
         assertNotNull(saved);
         verify(locationRepository).save(location);
@@ -72,15 +72,15 @@ class LocationServiceImplTest {
 
     @Test
     void testUpdate_Found() {
-        LocationCompany existing = new LocationCompany();
+        RentingCompany existing = new RentingCompany();
         ReflectionTestUtils.setField(existing, "id", 1L);
-        LocationCompany updated = new LocationCompany();
+        RentingCompany updated = new RentingCompany();
         updated.setName("New Name");
 
         when(locationRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(locationRepository.save(any())).thenReturn(existing);
 
-        LocationCompany result = locationService.update(updated, 1L);
+        RentingCompany result = locationService.update(updated, 1L);
 
         assertEquals("New Name", result.getName());
         verify(locationRepository).findById(1L);
@@ -89,7 +89,7 @@ class LocationServiceImplTest {
 
     @Test
     void testUpdate_NotFound() {
-        LocationCompany updated = new LocationCompany();
+        RentingCompany updated = new RentingCompany();
         when(locationRepository.findById(123L)).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> locationService.update(updated, 123L));
@@ -103,12 +103,12 @@ class LocationServiceImplTest {
 
     @Test
     void testFindByName() {
-        LocationCompany location = new LocationCompany();
+        RentingCompany location = new RentingCompany();
         location.setName("Studio A");
 
         when(locationRepository.findByName("Studio A")).thenReturn(Optional.of(location));
 
-        Optional<LocationCompany> result = locationService.findByName("Studio A");
+        Optional<RentingCompany> result = locationService.findByName("Studio A");
 
         assertTrue(result.isPresent());
         assertEquals("Studio A", result.get().getName());
@@ -117,10 +117,10 @@ class LocationServiceImplTest {
 
     @Test
     void testFindByProjectsId() {
-        Page<LocationCompany> page = new PageImpl<>(List.of(new LocationCompany()));
+        Page<RentingCompany> page = new PageImpl<>(List.of(new RentingCompany()));
         when(locationRepository.findByProjectsId(eq(10L), any(Pageable.class))).thenReturn(page);
 
-        Page<LocationCompany> result = locationService.findByProjectsId(Pageable.unpaged(), 10L);
+        Page<RentingCompany> result = locationService.findByProjectsId(Pageable.unpaged(), 10L);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());

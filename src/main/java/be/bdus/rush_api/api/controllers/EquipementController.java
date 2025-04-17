@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,5 +91,19 @@ public class EquipementController {
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         equipementService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/plan-revisions")
+    public ResponseEntity<Void> planNextRevisions() {
+        equipementService.planNextRevisionForEquipements();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/planned")
+    public ResponseEntity<List<Equipement>> getPlannedEquipements() {
+        List<Equipement> list = equipementService.findAll(Pageable.unpaged()).stream()
+                .filter(e -> e.getPlannedRevisionDate() != null)
+                .toList();
+        return ResponseEntity.ok(list);
     }
 }

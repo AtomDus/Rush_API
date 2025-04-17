@@ -1,8 +1,6 @@
 package be.bdus.rush_api.bll.services;
 
-import be.bdus.rush_api.api.models.equipement.forms.EquipementForm;
 import be.bdus.rush_api.dl.entities.Equipement;
-import be.bdus.rush_api.il.request.SearchParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,4 +23,6 @@ public interface EquipementService {
     Equipement update(Equipement equipement, Long id);
 
     List<Equipement> findEquipementsToRevise();
+
+    void planNextRevisionForEquipements();
 }

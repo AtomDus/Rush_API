@@ -10,20 +10,19 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final LCompanyRepository locationCompanyRepository;
+    private final RCompanyRepository locationCompanyRepository;
     private final PCompanyRepository productionCompanyRepository;
     private final EquipementRepository equipementRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final StageRepository stageRepository;
 
-    public DataInitializer(LCompanyRepository locationCompanyRepository,
+    public DataInitializer(RCompanyRepository locationCompanyRepository,
                            PCompanyRepository productionCompanyRepository,
                            EquipementRepository equipementRepository,
                            UserRepository userRepository,
@@ -48,8 +47,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private void loadLocationCompanies() {
         if (locationCompanyRepository.count() == 0) {
-            LocationCompany loc1 = new LocationCompany("LocaPro", "123 Rue de la Location", "1000", "Bruxelles", "Belgique", "321234567", "contact@locapro.com");
-            LocationCompany loc2 = new LocationCompany("GearRent", "22 Avenue des Tournages", "69000", "Lyon", "France", "334556677", "hello@gearrent.fr");
+            RentingCompany loc1 = new RentingCompany("LocaPro", "123 Rue de la Location", "1000", "Bruxelles", "Belgique", "321234567", "contact@locapro.com");
+            RentingCompany loc2 = new RentingCompany("GearRent", "22 Avenue des Tournages", "69000", "Lyon", "France", "334556677", "hello@gearrent.fr");
 
             locationCompanyRepository.saveAll(List.of(loc1, loc2));
         }
@@ -100,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private void loadEquipements() {
         if (equipementRepository.count() == 0) {
-            List<LocationCompany> locs = locationCompanyRepository.findAll();
+            List<RentingCompany> locs = locationCompanyRepository.findAll();
 
             Equipement eq1 = new Equipement(
                     "Caméra Sony",

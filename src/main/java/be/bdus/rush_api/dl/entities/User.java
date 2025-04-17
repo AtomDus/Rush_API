@@ -74,4 +74,13 @@ public class User {
         this.available = isAvailable;
         this.status = status;
     }
+
+    public String getFullName() {
+        return this.firstname + " " + this.lastname;
+    }
+
+    public void setFullName(String firstName, String lastName) {
+        this.firstname = firstName;
+        this.lastname = lastName;
+    }
 }

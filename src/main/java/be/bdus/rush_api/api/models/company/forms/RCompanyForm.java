@@ -1,10 +1,10 @@
 package be.bdus.rush_api.api.models.company.forms;
 
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dl.entities.RentingCompany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record LCompanyForm(
+public record RCompanyForm(
         @NotBlank
         String name,
 
@@ -26,8 +26,8 @@ public record LCompanyForm(
         @NotBlank
         String email
 ) {
-    public LocationCompany toCompany() {
-        LocationCompany company = new LocationCompany(name, address, zipCode, city, country, phoneNumber, email);
+    public RentingCompany toCompany() {
+        RentingCompany company = new RentingCompany(name, address, zipCode, city, country, phoneNumber, email);
         return company;
     }
 }

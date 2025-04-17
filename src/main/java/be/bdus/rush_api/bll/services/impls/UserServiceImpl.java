@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByJobTitle(pageable, jobTitle);
     }
 
-    public List<User> findAvailableUsers() {
-        return userRepository.findByAvailableTrue();
+    public Page<User> findAvailableUsers(Pageable pageable) {
+        return userRepository.findByAvailableTrue(pageable);
     }
 
     public boolean setUserAvailable(Long id) {

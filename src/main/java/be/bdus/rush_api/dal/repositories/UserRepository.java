@@ -20,5 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Page<User> findByJobTitle(Pageable pageable, String jobTitle);
 
-    List<User> findByAvailableTrue();
+    Page<User> findByAvailableTrue(Pageable pageable);
 }

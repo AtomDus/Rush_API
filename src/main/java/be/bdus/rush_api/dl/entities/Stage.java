@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode @ToString
@@ -47,6 +48,10 @@ public class Stage {
     @Setter
     @ManyToOne
     private Project project;
+
+    @Setter
+    @ManyToMany
+    private List<Task> tasks;
 
     public Stage(String name, String description, LocalDate startingDate, LocalDate finishingDate, StageStatus status, User responsable) {
         this.name = name;

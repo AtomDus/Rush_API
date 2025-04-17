@@ -1,6 +1,5 @@
 package be.bdus.rush_api.api.models.company.forms;
 
-import be.bdus.rush_api.dl.entities.LocationCompany;
 import be.bdus.rush_api.dl.entities.ProductionCompany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

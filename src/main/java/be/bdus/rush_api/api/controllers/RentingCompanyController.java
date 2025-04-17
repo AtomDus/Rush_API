@@ -2,9 +2,9 @@ package be.bdus.rush_api.api.controllers;
 
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.company.dtos.CompanyDTO;
-import be.bdus.rush_api.api.models.company.forms.LCompanyForm;
-import be.bdus.rush_api.bll.services.LocationService;
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.api.models.company.forms.RCompanyForm;
+import be.bdus.rush_api.bll.services.RentingService;
+import be.bdus.rush_api.dl.entities.RentingCompany;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/location")
+@RequestMapping("/renting-company")
 
 @CrossOrigin("*")
-@Tag(name = "location", description = "Endpoints use for location company")
-public class LocationCompanyController {
+@Tag(name = "Renting Company", description = "Endpoints use for renting company")
+public class RentingCompanyController {
 
-    private final LocationService locationService;
+    private final RentingService locationService;
 
     @Operation(summary = "Listing all companies we have in our database", description = "Use to list all companies we have in our database")
     @GetMapping
@@ -33,7 +33,7 @@ public class LocationCompanyController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort
     ) {
-        Page<LocationCompany> LocationCompany = locationService.findAll(
+        Page<RentingCompany> LocationCompany = locationService.findAll(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)));
         List<CompanyDTO> dtos = LocationCompany.getContent().stream()
                 .map(CompanyDTO::fromCompany)
@@ -45,7 +45,7 @@ public class LocationCompanyController {
     @Operation(summary = "Listing companies by id", description = "Let the user search an company with its id")
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDTO> getById(@RequestParam Long id) {
-        LocationCompany LocationCompany = locationService.findById(id);
+        RentingCompany LocationCompany = locationService.findById(id);
         return ResponseEntity.ok(CompanyDTO.fromCompany(LocationCompany));
     }
 
@@ -65,7 +65,7 @@ public class LocationCompanyController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        Page<LocationCompany> locations = locationService.findByProjectsId(
+        Page<RentingCompany> locations = locationService.findByProjectsId(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
         );
 
@@ -80,7 +80,7 @@ public class LocationCompanyController {
 
     @Operation(summary = "Adding a new company", description = "Use to add a new company")
     @PostMapping("/add")
-    public ResponseEntity<CompanyDTO> save(@RequestBody LCompanyForm locationCompany) {
+    public ResponseEntity<CompanyDTO> save(@RequestBody RCompanyForm locationCompany) {
         return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.save(locationCompany.toCompany())));
     }
 
@@ -93,7 +93,7 @@ public class LocationCompanyController {
 
     @Operation(summary = "Updating a company", description = "Use to update a company")
     @PutMapping("/update/{id}")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody LCompanyForm locationCompany) {
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody RCompanyForm locationCompany) {
         return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.update(locationCompany.toCompany(), id)));
     }
 

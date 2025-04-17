@@ -1,9 +1,7 @@
 package be.bdus.rush_api.bll.services.impls;
 
 import be.bdus.rush_api.bll.services.ProductionService;
-import be.bdus.rush_api.dal.repositories.LCompanyRepository;
 import be.bdus.rush_api.dal.repositories.PCompanyRepository;
-import be.bdus.rush_api.dl.entities.LocationCompany;
 import be.bdus.rush_api.dl.entities.ProductionCompany;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

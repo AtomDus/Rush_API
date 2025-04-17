@@ -1,13 +1,12 @@
 package be.bdus.rush_api.api.models.equipement.forms;
 
-import be.bdus.rush_api.api.models.company.forms.LCompanyForm;
+import be.bdus.rush_api.api.models.company.forms.RCompanyForm;
 import be.bdus.rush_api.dl.entities.Equipement;
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dl.entities.RentingCompany;
 import be.bdus.rush_api.dl.enums.EquipementCondition;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public record EquipementForm (
 
@@ -15,7 +14,7 @@ public record EquipementForm (
         String name,
 
         @NotBlank
-        LCompanyForm owner,
+        RCompanyForm owner,
 
         @NotBlank
         String description,
@@ -41,7 +40,7 @@ public record EquipementForm (
         LocalDate lastRevision
 ){
     public Equipement toEquipement() {
-        LocationCompany company = owner.toCompany();
+        RentingCompany company = owner.toCompany();
         Equipement equipement = new Equipement(name, company, description, model, serialNumber, type, condition, stock, stockLocation, acquisitionDate, lastRevision);
         return equipement;
     }

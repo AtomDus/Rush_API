@@ -17,5 +17,7 @@ public interface UserService {
 
     Page<User> findByJobTitle(Pageable pageable, String jobTitle);
 
-    List<User> findAvailableUsers();
+    Page<User> findAvailableUsers(Pageable pageable);
+
+    boolean setUserAvailable(Long id);
 }

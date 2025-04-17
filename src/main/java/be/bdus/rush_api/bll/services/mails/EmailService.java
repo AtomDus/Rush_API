@@ -5,9 +5,11 @@ import be.bdus.rush_api.dl.entities.Stage;
 import be.bdus.rush_api.dl.entities.User;
 import org.springframework.messaging.MessagingException;
 
+import java.util.Map;
+
 public interface EmailService {
 
-    String sendSimpleMail(EmailDTO details);
+    String sendTemplateEmail(String to, String subject, String templateName, Map<String, Object> variables);
 
-    String sendEventReminderEmail(User user, Stage stage) throws MessagingException;
+    public String sendStageReminderEmail(User user, Stage stage, String templateName, String subject);
 }

@@ -2,11 +2,9 @@ package be.bdus.rush_api.dl.entities;
 
 import be.bdus.rush_api.dl.enums.EquipementCondition;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode @ToString
@@ -24,7 +22,7 @@ public class Equipement {
 
     @Setter
     @ManyToOne
-    private LocationCompany owner;
+    private RentingCompany owner;
 
     @Setter
     @Column(nullable = false, length = 200)
@@ -66,7 +64,11 @@ public class Equipement {
     @Column
     private LocalDate dateLastRevision;
 
-    public Equipement(String name, LocationCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, LocalDate acquisitionDate, LocalDate lastRevision) {
+    @Setter
+    @Column(name = "planned_revision_date")
+    private LocalDate plannedRevisionDate;
+
+    public Equipement(String name, RentingCompany owner, String description, String model, String serialNumber, String type, EquipementCondition condition, int stock, String stockLocation, LocalDate acquisitionDate, LocalDate lastRevision) {
         this.name = name;
         this.owner = owner;
         this.description = description;
@@ -79,6 +81,4 @@ public class Equipement {
         this.dateAcquisition = acquisitionDate;
         this.dateLastRevision = lastRevision;
     }
-
-
 }

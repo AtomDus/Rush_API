@@ -61,8 +61,9 @@ public class StageController {
 
     @Operation(summary = "Updating a stage", description = "Use to update a stage")
     @PutMapping("/update/{id}")
-    public ResponseEntity<StageDTO> update(@RequestBody StageForm stage, @PathVariable Long id) {
-        return ResponseEntity.ok(StageDTO.fromStage(stageService.update(stage.toStage(), id)));
+    public ResponseEntity<StageDTO> update(@RequestBody StageCreationForm stageForm, @PathVariable Long id) {
+        Stage updatedStage = stageService.updateFromForm(stageForm, id);
+        return ResponseEntity.ok(StageDTO.fromStage(updatedStage));
     }
 
     @Operation(summary = "Deleting a stage", description = "Use to delete a stage")

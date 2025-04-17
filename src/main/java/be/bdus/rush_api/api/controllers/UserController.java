@@ -67,4 +67,29 @@ public class UserController {
         return ResponseEntity.ok(userDTOPage);
     }
 
+    @Operation(summary = "Listing all available users", description = "Use to list all available users")
+    @GetMapping("/available")
+    public ResponseEntity<Page<UserDTO>> getAvailableUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort
+    ) {
+        Page<User> users = userService.findAvailableUsers(
+                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort))
+        );
+        if (users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Page<UserDTO> userDTOPage = users.map(UserDTO::fromUser);
+        return ResponseEntity.ok(userDTOPage);
+    }
+
+    @Operation(summary = "Setting a user as available", description = "Use to set a user as available")
+    @PutMapping("/users/{id}/available")
+    public ResponseEntity<Void> setUserAvailable(@PathVariable Long id) {
+        boolean updated = userService.setUserAvailable(id);
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+
 }

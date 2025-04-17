@@ -3,10 +3,14 @@ package be.bdus.rush_api.api.controllers;
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.equipement.dtos.EquipementDTO;
 import be.bdus.rush_api.api.models.project.dtos.ProjectDTO;
+import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectForm;
+import be.bdus.rush_api.api.models.stage.dtos.StageDTO;
+import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.bll.services.ProjectService;
 import be.bdus.rush_api.dl.entities.Equipement;
 import be.bdus.rush_api.dl.entities.Project;
+import be.bdus.rush_api.dl.entities.Stage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -53,21 +57,29 @@ public class ProjectController {
 
     @Operation(summary = "Adding a project", description = "Use to add a project")
     @PostMapping("/add")
-    public ResponseEntity<ProjectDTO> save(@RequestBody ProjectForm project) {
-        return ResponseEntity.ok(ProjectDTO.fromProject(projectService.save(project.toProject())));
+    public ResponseEntity<ProjectDTO> save(@RequestBody ProjectCreationForm form) {
+        Project savedProject = projectService.saveFromForm(form);
+        return ResponseEntity.ok(ProjectDTO.fromProject(savedProject));
     }
 
     @Operation(summary = "Updating a project", description = "Use to update a project")
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDTO> update(@PathVariable Long id, @RequestBody ProjectForm project) {
-        Project updatedProject = projectService.update(project.toProject(), id);
-        return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
+    public ResponseEntity<ProjectDTO> update(@RequestBody ProjectCreationForm form, @PathVariable Long id) {
+        Project savedProject = projectService.updateFromForm(form, id);
+        return ResponseEntity.ok(ProjectDTO.fromProject(savedProject));
     }
 
     @Operation(summary = "Deleting a project", description = "Use to delete a project")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         projectService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Updating a project status", description = "Set status to closed")
+    @PutMapping
+    public ResponseEntity<Void> updateProjectStatus(@PathVariable Long id) {
+        projectService.updateProjectStatus(id);
         return ResponseEntity.noContent().build();
     }
 

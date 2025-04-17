@@ -6,10 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,4 +110,81 @@ class UserServiceImplTest {
         assertEquals(1, result.getTotalElements());
         verify(userRepository).findByJobTitle(any(Pageable.class), eq("Director"));
     }
+
+    @Test
+    void testFindAvailableUsers() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> users = List.of(new User(), new User());
+        Page<User> page = new PageImpl<>(users, pageable, users.size());
+
+        when(userRepository.findByAvailableTrue(pageable)).thenReturn(page);
+
+        Page<User> result = userService.findAvailableUsers(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        verify(userRepository).findByAvailableTrue(pageable);
+    }
+
+    @Test
+    void testSetUserAvailable_success() {
+        Long userId = 1L;
+        User user = new User();
+        user.setAvailable(false);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+
+        boolean result = userService.setUserAvailable(userId);
+
+        assertTrue(result);
+        assertTrue(user.isAvailable());
+        verify(userRepository).save(user);
+    }
+
+
+    @Test
+    void testSetUserAvailable_userNotFound() {
+        Long userId = 999L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = userService.setUserAvailable(userId);
+
+        assertFalse(result);
+        verify(userRepository, never()).save(any());
+    }
+
+
+
+    @Test
+    void testSetUserAvailable_found() {
+        // Given
+        User user = new User();
+        user.setAvailable(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        boolean result = userService.setUserAvailable(1L);
+
+        // Then
+        assertTrue(result);
+        assertTrue(user.isAvailable());
+        verify(userRepository).findById(1L);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void testSetUserAvailable_notFound() {
+        // Given
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // When
+        boolean result = userService.setUserAvailable(99L);
+
+        // Then
+        assertFalse(result);
+        verify(userRepository).findById(99L);
+        verify(userRepository, never()).save(any());
+    }
+
 }

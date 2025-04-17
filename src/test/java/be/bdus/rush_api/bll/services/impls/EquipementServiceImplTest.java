@@ -3,7 +3,8 @@ package be.bdus.rush_api.bll.services.impls;
 import be.bdus.rush_api.dal.repositories.EquipementRepository;
 import be.bdus.rush_api.dal.repositories.UserRepository;
 import be.bdus.rush_api.dl.entities.Equipement;
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dl.entities.RentingCompany;
+import be.bdus.rush_api.dl.enums.EquipementCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +26,7 @@ class EquipementServiceImplTest {
 
     private EquipementRepository equipementRepository;
     private EquipementServiceImpl equipementService;
-    private LocationServiceImpl locationService;
+    private RentingServiceImpl locationService;
     private UserRepository userRepository;
 
 
@@ -31,7 +34,7 @@ class EquipementServiceImplTest {
     void setUp() {
         equipementRepository = mock(EquipementRepository.class);
         userRepository = mock(UserRepository.class);
-        locationService = mock(LocationServiceImpl.class);
+        locationService = mock(RentingServiceImpl.class);
 
         equipementService = new EquipementServiceImpl(equipementRepository, userRepository, locationService);
     }
@@ -89,7 +92,7 @@ class EquipementServiceImplTest {
     @Test
     void testSave_WithNewOwner() {
         Equipement equipement = new Equipement();
-        LocationCompany newOwner = new LocationCompany();
+        RentingCompany newOwner = new RentingCompany();
         newOwner.setName("NewOwner");
         equipement.setOwner(newOwner);
 
@@ -104,7 +107,7 @@ class EquipementServiceImplTest {
     @Test
     void testSave_WithExistingOwner() {
         Equipement equipement = new Equipement();
-        LocationCompany existingOwner = new LocationCompany();
+        RentingCompany existingOwner = new RentingCompany();
         existingOwner.setName("Existing");
 
         equipement.setOwner(existingOwner);
@@ -146,6 +149,46 @@ class EquipementServiceImplTest {
         when(equipementRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> equipementService.update(dummy, 999L));
+    }
+
+    @Test
+    void testFindEquipementsToRevise() {
+        // Given
+        Equipement oldEquipement = new Equipement();
+        oldEquipement.setDateLastRevision(LocalDate.now().minusMonths(7));
+
+        Equipement recentEquipement = new Equipement();
+        recentEquipement.setDateLastRevision(LocalDate.now().minusMonths(3));
+
+        Equipement noRevisionDate = new Equipement();
+        noRevisionDate.setDateLastRevision(null);
+
+        when(equipementRepository.findAll()).thenReturn(List.of(oldEquipement, recentEquipement, noRevisionDate));
+
+        // When
+        List<Equipement> result = equipementService.findEquipementsToRevise();
+
+        // Then
+        assertEquals(1, result.size());
+        assertTrue(result.contains(oldEquipement));
+    }
+
+    @Test
+    void testPlanNextRevisionForEquipements() {
+        // Given
+        Equipement toRevise = new Equipement();
+        toRevise.setDateLastRevision(LocalDate.now().minusMonths(7));
+        toRevise.setCondition(EquipementCondition.TO_BE_REVISED);
+
+        when(equipementRepository.findAll()).thenReturn(List.of(toRevise));
+
+        // When
+        equipementService.planNextRevisionForEquipements();
+
+        // Then
+        assertEquals(LocalDate.now().plusWeeks(2), toRevise.getPlannedRevisionDate());
+        assertEquals(EquipementCondition.TO_BE_REVISED, toRevise.getCondition());
+        verify(equipementRepository).saveAll(List.of(toRevise));
     }
 
 }

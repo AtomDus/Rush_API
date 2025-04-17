@@ -1,8 +1,13 @@
 package be.bdus.rush_api.bll.services.impls;
 
+import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.bll.services.ProjectService;
+import be.bdus.rush_api.dal.repositories.PCompanyRepository;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
+import be.bdus.rush_api.dal.repositories.UserRepository;
+import be.bdus.rush_api.dl.entities.ProductionCompany;
 import be.bdus.rush_api.dl.entities.Project;
+import be.bdus.rush_api.dl.entities.User;
 import be.bdus.rush_api.dl.enums.StageStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +24,8 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final PCompanyRepository productionRepository;
 
     @Override
     public Page<Project> findAll(Pageable pageable) {
@@ -65,6 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.deleteById(id);
     }
 
+    @Override
     public Project updateProjectStatus(Long id) {
         Project project = findById(id);
         if (project.getFinishingDate().isBefore(LocalDate.now()) && !project.getStatus().equals("Completed")) {
@@ -72,5 +80,49 @@ public class ProjectServiceImpl implements ProjectService {
             projectRepository.save(project);
         }
         return project;
+    }
+
+    @Override
+    public Project saveFromForm(ProjectCreationForm projectForm) {
+        User responsable = userRepository.findByEmail(projectForm.responsableEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
+
+        ProductionCompany productionCompany = productionRepository.findByName(projectForm.productionCompanyName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Production company not found"));
+
+        Project project = new Project();
+        project.setName(projectForm.name());
+        project.setDescription(projectForm.description());
+        project.setStartingDate(projectForm.startingDate());
+        project.setFinishingDate(projectForm.finishingDate());
+        project.setStatus(projectForm.status());
+        project.setResponsable(responsable);
+        project.setProductionCompany(productionCompany);
+        project.setBudget(projectForm.budget());
+        project.setDuration(projectForm.duration());
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project updateFromForm(ProjectCreationForm form, Long id) {
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        existingProject.setName(form.name());
+        existingProject.setDescription(form.description());
+        existingProject.setStartingDate(form.startingDate());
+        existingProject.setFinishingDate(form.finishingDate());
+        existingProject.setStatus(form.status());
+
+        User responsable = userRepository.findByEmail(form.responsableEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
+        existingProject.setResponsable(responsable);
+
+        ProductionCompany productionCompany = productionRepository.findByName(form.productionCompanyName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Production company not found"));
+        existingProject.setProductionCompany(productionCompany);
+
+        return projectRepository.save(existingProject);
     }
 }

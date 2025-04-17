@@ -4,7 +4,6 @@ import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public record ProjectDTO (
@@ -18,7 +17,7 @@ public record ProjectDTO (
         List<User> employes,
         ProductionCompany productionCompany,
         List<Equipement> equipements,
-        List<LocationCompany> locationCompanies,
+        List<RentingCompany> locationCompanies,
         List<Stage> stages,
         int nbOfStages,
         double pourcentageDone,

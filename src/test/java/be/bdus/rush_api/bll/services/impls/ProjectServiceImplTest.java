@@ -1,15 +1,25 @@
 package be.bdus.rush_api.bll.services.impls;
 
+import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
+import be.bdus.rush_api.dal.repositories.PCompanyRepository;
+import be.bdus.rush_api.dal.repositories.UserRepository;
+import be.bdus.rush_api.dl.entities.ProductionCompany;
 import be.bdus.rush_api.dl.entities.Project;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
+import be.bdus.rush_api.dl.entities.User;
+import be.bdus.rush_api.dl.enums.StageStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -18,13 +28,21 @@ import static org.mockito.Mockito.*;
 
 class ProjectServiceImplTest {
 
+    @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private PCompanyRepository productionRepository;
+
+    @InjectMocks
     private ProjectServiceImpl projectService;
 
     @BeforeEach
     void setUp() {
-        projectRepository = mock(ProjectRepository.class);
-        projectService = new ProjectServiceImpl(projectRepository);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -111,5 +129,65 @@ class ProjectServiceImplTest {
         projectService.delete(1L);
 
         verify(projectRepository).deleteById(1L);
+    }
+
+    @Test
+    void testUpdateProjectStatus_ShouldCloseProject() {
+        Project project = new Project();
+        project.setFinishingDate(LocalDate.now().minusDays(1));
+        project.setStatus(StageStatus.OPEN);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Project updated = projectService.updateProjectStatus(1L);
+
+        assertEquals(StageStatus.CLOSED, updated.getStatus());
+    }
+
+    @Test
+    void testSaveFromForm_ShouldSaveProject() {
+        ProjectCreationForm form = new ProjectCreationForm(
+                "Project Name", "Description", LocalDate.now(), LocalDate.now().plusDays(10),
+                StageStatus.OPEN, "user@example.com", "ProdCo", 30, 10000
+        );
+
+        User user = new User();
+        ProductionCompany company = new ProductionCompany();
+
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(productionRepository.findByName("ProdCo")).thenReturn(Optional.of(company));
+        when(projectRepository.save(any(Project.class))).thenAnswer(i -> i.getArgument(0));
+
+        Project saved = projectService.saveFromForm(form);
+
+        assertEquals("Project Name", saved.getName());
+        assertEquals(user, saved.getResponsable());
+        assertEquals(company, saved.getProductionCompany());
+    }
+
+    @Test
+    void testUpdateFromForm_ShouldUpdateProject() {
+        Long projectId = 1L;
+        Project existing = new Project();
+
+        User user = new User();
+        ProductionCompany company = new ProductionCompany();
+
+        ProjectCreationForm form = new ProjectCreationForm(
+                "Updated Project", "Updated Desc", LocalDate.now(), LocalDate.now().plusDays(5),
+                StageStatus.CLOSED, "user@example.com", "ProdCo", 60, 20000
+        );
+
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(existing));
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(productionRepository.findByName("ProdCo")).thenReturn(Optional.of(company));
+        when(projectRepository.save(any(Project.class))).thenAnswer(i -> i.getArgument(0));
+
+        Project updated = projectService.updateFromForm(form, projectId);
+
+        assertEquals("Updated Project", updated.getName());
+        assertEquals(user, updated.getResponsable());
+        assertEquals(company, updated.getProductionCompany());
     }
 }

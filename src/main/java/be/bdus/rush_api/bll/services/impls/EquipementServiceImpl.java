@@ -1,14 +1,11 @@
 package be.bdus.rush_api.bll.services.impls;
 
-import be.bdus.rush_api.api.models.equipement.forms.EquipementForm;
 import be.bdus.rush_api.bll.services.EquipementService;
 import be.bdus.rush_api.dal.repositories.EquipementRepository;
-import be.bdus.rush_api.dal.repositories.LCompanyRepository;
 import be.bdus.rush_api.dal.repositories.UserRepository;
 import be.bdus.rush_api.dl.entities.Equipement;
-import be.bdus.rush_api.dl.entities.LocationCompany;
-import be.bdus.rush_api.il.request.SearchParam;
-import be.bdus.rush_api.il.specifications.SearchSpecification;
+import be.bdus.rush_api.dl.entities.RentingCompany;
+import be.bdus.rush_api.dl.enums.EquipementCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +25,7 @@ public class EquipementServiceImpl implements EquipementService {
 
     private final EquipementRepository equipementRepository;
     private final UserRepository userRepository;
-    private final LocationServiceImpl locationService;
+    private final RentingServiceImpl locationService;
 
     @Override
     public Page<Equipement> findAll(Pageable pageable) {
@@ -52,10 +49,10 @@ public class EquipementServiceImpl implements EquipementService {
 
     @Override
     public Equipement save(Equipement equipement) {
-        LocationCompany owner = equipement.getOwner();
+        RentingCompany owner = equipement.getOwner();
 
         if (owner != null && owner.getName() != null) {
-            Optional<LocationCompany> existingOwnerOpt = locationService.findByName(owner.getName());
+            Optional<RentingCompany> existingOwnerOpt = locationService.findByName(owner.getName());
 
             if (existingOwnerOpt.isPresent()) {
                 equipement.setOwner(existingOwnerOpt.get());
@@ -84,9 +81,9 @@ public class EquipementServiceImpl implements EquipementService {
         updatedEquipement.setStock(equipement.getStock());
         updatedEquipement.setStockagePlace(equipement.getStockagePlace());
 
-        LocationCompany owner = equipement.getOwner();
+        RentingCompany owner = equipement.getOwner();
         if (owner != null && owner.getName() != null) {
-            Optional<LocationCompany> existingOwnerOpt = locationService.findByName(owner.getName());
+            Optional<RentingCompany> existingOwnerOpt = locationService.findByName(owner.getName());
 
             if (existingOwnerOpt.isPresent()) {
                 updatedEquipement.setOwner(existingOwnerOpt.get());
@@ -103,5 +100,14 @@ public class EquipementServiceImpl implements EquipementService {
         return equipementRepository.findAll().stream()
                 .filter(e -> e.getDateLastRevision() != null && e.getDateLastRevision().isBefore(checkDate))
                 .collect(Collectors.toList());
+    }
+
+    public void planNextRevisionForEquipements() {
+        List<Equipement> toRevise = findEquipementsToRevise();
+        toRevise.forEach(eq -> {
+            eq.setPlannedRevisionDate(LocalDate.now().plusWeeks(2));
+            eq.setCondition(EquipementCondition.TO_BE_REVISED);
+        });
+        equipementRepository.saveAll(toRevise);
     }
 }

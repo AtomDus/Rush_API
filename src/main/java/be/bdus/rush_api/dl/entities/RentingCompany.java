@@ -1,8 +1,6 @@
 package be.bdus.rush_api.dl.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.List;
 @EqualsAndHashCode @ToString
 @Getter
 @Entity
-public class LocationCompany {
+public class RentingCompany {
 
     @Id@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -52,7 +50,7 @@ public class LocationCompany {
     )
     private List<Project> projects;
 
-    public LocationCompany(String name, String address, String zipCode, String city, String country, String phoneNumber, String email) {
+    public RentingCompany(String name, String address, String zipCode, String city, String country, String phoneNumber, String email) {
         this.name = name;
         this.address = address;
         this.zipCode = zipCode;

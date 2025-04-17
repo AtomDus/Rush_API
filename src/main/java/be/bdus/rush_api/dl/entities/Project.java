@@ -2,12 +2,9 @@ package be.bdus.rush_api.dl.entities;
 
 import be.bdus.rush_api.dl.enums.StageStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -60,7 +57,7 @@ public class Project {
 
     @Setter
     @ManyToMany
-    private List<LocationCompany> locationCompanies;
+    private List<RentingCompany> locationCompanies;
 
     @Setter
     @ManyToMany

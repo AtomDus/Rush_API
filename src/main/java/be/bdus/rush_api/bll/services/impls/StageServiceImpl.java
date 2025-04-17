@@ -37,41 +37,46 @@ public class StageServiceImpl implements StageService {
         return stageRepository.findById(id).orElseThrow(() -> new RuntimeException("Stage not found"));
     }
 
+//    @Override
+//    public Stage createStage(StageCreationDTO dto) {
+//        Stage stage = new Stage();
+//        stage.setName(dto.name());
+//        stage.setDescription(dto.description());
+//        stage.setStartingDate(dto.startingDate());
+//        stage.setFinishingDate(dto.finishingDate());
+//        stage.setStatus(dto.status());
+//
+//        User responsable = userRepository.findByEmail(dto.responsableEmail())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
+//        stage.setResponsable(responsable);
+//
+//        Project project = projectRepository.findByName(dto.projectName())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+//        stage.setProject(project);
+//
+//        return stageRepository.save(stage);
+//    }
+
     @Override
-    public Stage createStage(StageCreationDTO dto) {
-        Stage stage = new Stage();
-        stage.setName(dto.name());
-        stage.setDescription(dto.description());
-        stage.setStartingDate(dto.startingDate());
-        stage.setFinishingDate(dto.finishingDate());
-        stage.setStatus(dto.status());
+    public Stage update(StageCreationDTO dto, Long id) {
+        Stage existingStage = stageRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stage not found"));
+
+        existingStage.setName(dto.name());
+        existingStage.setDescription(dto.description());
+        existingStage.setStartingDate(dto.startingDate());
+        existingStage.setFinishingDate(dto.finishingDate());
+        existingStage.setStatus(dto.status());
 
         User responsable = userRepository.findByEmail(dto.responsableEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
-        stage.setResponsable(responsable);
+        existingStage.setResponsable(responsable);
 
         Project project = projectRepository.findByName(dto.projectName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-        stage.setProject(project);
+        existingStage.setProject(project);
 
-        return stageRepository.save(stage);
-    }
-
-    @Override
-    public Stage update(Stage stage, Long id) {
-        Optional<Stage> stageOptional = stageRepository.findById(id);
-        if (stageOptional.isPresent()) {
-            Stage existingStage = stageOptional.get();
-            existingStage.setName(stage.getName());
-            existingStage.setDescription(stage.getDescription());
-            existingStage.setStartingDate(stage.getStartingDate());
-            existingStage.setFinishingDate(stage.getFinishingDate());
-            existingStage.setStatus(stage.getStatus());
-            existingStage.setResponsable(stage.getResponsable());
-            return stageRepository.save(existingStage);
-        } else {
-            throw new RuntimeException("Stage not found");
-        }
+        return stageRepository.save(existingStage);
     }
 
     @Override
@@ -96,6 +101,42 @@ public class StageServiceImpl implements StageService {
         stage.setResponsable(responsable);
         stage.setProject(project);
 
+        validateStageDates(stage, project);
+
         return stageRepository.save(stage);
+    }
+
+    @Override
+    public Stage updateFromForm(StageCreationForm form, Long id) {
+        Stage existingStage = stageRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stage not found"));
+
+        User responsable = userRepository.findByEmail(form.responsableEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
+
+        Project project = projectRepository.findByName(form.projectName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        existingStage.setName(form.name());
+        existingStage.setDescription(form.description());
+        existingStage.setStartingDate(form.startingDate());
+        existingStage.setFinishingDate(form.finishingDate());
+        existingStage.setStatus(form.status());
+        existingStage.setResponsable(responsable);
+        existingStage.setProject(project);
+
+        validateStageDates(existingStage, project);
+
+        return stageRepository.save(existingStage);
+    }
+
+    private void validateStageDates(Stage stage, Project project) {
+        if (stage.getStartingDate().isBefore(project.getStartingDate()) ||
+                stage.getFinishingDate().isAfter(project.getFinishingDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stage dates must be within project range");
+        }
+        if (stage.getStartingDate().isAfter(stage.getFinishingDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stage starting date cannot be after finishing date");
+        }
     }
 }

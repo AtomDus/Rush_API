@@ -1,7 +1,7 @@
 package be.bdus.rush_api.api.models.company.dtos;
 
 
-import be.bdus.rush_api.dl.entities.LocationCompany;
+import be.bdus.rush_api.dl.entities.RentingCompany;
 import be.bdus.rush_api.dl.entities.ProductionCompany;
 
 public record CompanyDTO (
@@ -14,7 +14,7 @@ public record CompanyDTO (
         String phoneNumber,
         String email
 ) {
-    public static CompanyDTO fromCompany(LocationCompany company) {
+    public static CompanyDTO fromCompany(RentingCompany company) {
         return new CompanyDTO(
                 company.getId(),
                 company.getName(),
