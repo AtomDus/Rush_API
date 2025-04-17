@@ -72,10 +72,6 @@ public class StageServiceImpl implements StageService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
         existingStage.setResponsable(responsable);
 
-        Project project = projectRepository.findByName(dto.projectName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-        existingStage.setProject(project);
-
         return stageRepository.save(existingStage);
     }
 
@@ -89,9 +85,6 @@ public class StageServiceImpl implements StageService {
         User responsable = userRepository.findByEmail(form.responsableEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
 
-        Project project = projectRepository.findByName(form.projectName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-
         Stage stage = new Stage();
         stage.setName(form.name());
         stage.setDescription(form.description());
@@ -99,9 +92,7 @@ public class StageServiceImpl implements StageService {
         stage.setFinishingDate(form.finishingDate());
         stage.setStatus(form.status());
         stage.setResponsable(responsable);
-        stage.setProject(project);
 
-        validateStageDates(stage, project);
 
         return stageRepository.save(stage);
     }
@@ -114,8 +105,6 @@ public class StageServiceImpl implements StageService {
         User responsable = userRepository.findByEmail(form.responsableEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
 
-        Project project = projectRepository.findByName(form.projectName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
 
         existingStage.setName(form.name());
         existingStage.setDescription(form.description());
@@ -123,9 +112,6 @@ public class StageServiceImpl implements StageService {
         existingStage.setFinishingDate(form.finishingDate());
         existingStage.setStatus(form.status());
         existingStage.setResponsable(responsable);
-        existingStage.setProject(project);
-
-        validateStageDates(existingStage, project);
 
         return stageRepository.save(existingStage);
     }

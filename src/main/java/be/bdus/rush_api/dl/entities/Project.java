@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -59,9 +60,8 @@ public class Project {
     @ManyToMany
     private List<RentingCompany> locationCompanies;
 
-    @Setter
-    @ManyToMany
-    private List<Stage> stages;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stage> stages = new ArrayList<>();
 
     @Setter
     @Column

@@ -23,9 +23,6 @@ public record StageCreationForm (
         StageStatus status,
 
         @NotBlank
-        String responsableEmail,
-
-        @NotBlank
-        String projectName
+        String responsableEmail
 ){
 }

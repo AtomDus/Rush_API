@@ -1,5 +1,8 @@
 package be.bdus.rush_api.api.models.project.dtos;
 
+import be.bdus.rush_api.api.models.stage.dtos.StageCreationDTO;
+import be.bdus.rush_api.api.models.stage.dtos.StageDTO;
+import be.bdus.rush_api.api.models.user.dtos.UserDTO;
 import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 
@@ -13,12 +16,12 @@ public record ProjectDTO (
         LocalDate startingDate,
         LocalDate finishingDate,
         StageStatus status,
-        User responsable,
-        List<User> employes,
+        UserDTO responsable,
+        List<UserDTO> employes,
         ProductionCompany productionCompany,
         List<Equipement> equipements,
         List<RentingCompany> locationCompanies,
-        List<Stage> stages,
+        List<StageCreationDTO> stages,
         int nbOfStages,
         double pourcentageDone,
         int duration,
@@ -26,6 +29,16 @@ public record ProjectDTO (
         String place
 ) {
     public static ProjectDTO fromProject(Project project) {
+        List<StageCreationDTO> stageDTOs = project.getStages().stream()
+                .map(StageCreationDTO::fromStage)
+                .toList();
+
+        List<UserDTO> userDTOs = project.getEmployes().stream()
+                .map(UserDTO::fromUser)
+                .toList();
+
+        UserDTO responsableDTO = UserDTO.fromUser(project.getResponsable());
+
         return new ProjectDTO(
                 project.getId(),
                 project.getName(),
@@ -33,12 +46,12 @@ public record ProjectDTO (
                 project.getStartingDate(),
                 project.getFinishingDate(),
                 project.getStatus(),
-                project.getResponsable(),
-                project.getEmployes(),
+                responsableDTO,
+                userDTOs,
                 project.getProductionCompany(),
                 project.getEquipements(),
                 project.getLocationCompanies(),
-                project.getStages(),
+                stageDTOs,
                 project.getNbOfStages(),
                 project.getPourcentageDone(),
                 project.getDuration(),

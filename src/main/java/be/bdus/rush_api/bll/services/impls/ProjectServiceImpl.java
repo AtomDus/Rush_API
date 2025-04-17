@@ -58,7 +58,6 @@ public class ProjectServiceImpl implements ProjectService {
         updatedProject.setProductionCompany(project.getProductionCompany());
         updatedProject.setEmployes(project.getEmployes());
         updatedProject.setEquipements(project.getEquipements());
-        updatedProject.setStages(project.getStages());
         updatedProject.setNbOfStages(project.getNbOfStages());
         updatedProject.setPourcentageDone(project.getPourcentageDone());
         updatedProject.setDuration(project.getDuration());
