@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @Operation(summary = "Listing all projects", description = "Use to list all projects")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<CustomPage<ProjectDTO>> getAllProject(
             @RequestParam(defaultValue = "1") int page,
@@ -49,6 +51,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing projects by id", description = "Let the user search an projects with its id")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getById(@RequestParam Long id) {
         Project Project = projectService.findById(id);
@@ -56,6 +59,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Adding a project", description = "Use to add a project")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PostMapping("/add")
     public ResponseEntity<ProjectDTO> save(@RequestBody ProjectCreationForm form) {
         Project savedProject = projectService.saveFromForm(form);
@@ -63,6 +67,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project", description = "Use to update a project")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> update(@RequestBody ProjectCreationForm form, @PathVariable Long id) {
         Project savedProject = projectService.updateFromForm(form, id);
@@ -70,6 +75,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Deleting a project", description = "Use to delete a project")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         projectService.delete(id);
@@ -77,6 +83,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project status", description = "Set status to closed")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping
     public ResponseEntity<Void> updateProjectStatus(@PathVariable Long id) {
         projectService.updateProjectStatus(id);

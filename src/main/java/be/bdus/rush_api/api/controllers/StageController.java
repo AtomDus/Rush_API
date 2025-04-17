@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class StageController {
     private final StageService stageService;
 
     @Operation(summary = "Listing all stages", description = "Use to list all stages")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping
     public ResponseEntity<CustomPage<StageDTO>> getAllProject(
             @RequestParam(defaultValue = "1") int page,
@@ -46,6 +48,7 @@ public class StageController {
     }
 
     @Operation(summary = "Listing stages by id", description = "Let the user search an stages with its id")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<StageDTO> getById(@RequestParam Long id) {
         Stage stage = stageService.findById(id);
@@ -53,6 +56,7 @@ public class StageController {
     }
 
     @Operation(summary = "Adding a stage", description = "Use to add a stage")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PostMapping("/add")
     public ResponseEntity<StageDTO> save(@RequestBody StageCreationForm stageForm) {
         Stage savedStage = stageService.saveFromForm(stageForm);
@@ -60,6 +64,7 @@ public class StageController {
     }
 
     @Operation(summary = "Updating a stage", description = "Use to update a stage")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<StageDTO> update(@RequestBody StageCreationForm stageForm, @PathVariable Long id) {
         Stage updatedStage = stageService.updateFromForm(stageForm, id);
@@ -67,6 +72,7 @@ public class StageController {
     }
 
     @Operation(summary = "Deleting a stage", description = "Use to delete a stage")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         stageService.delete(id);
