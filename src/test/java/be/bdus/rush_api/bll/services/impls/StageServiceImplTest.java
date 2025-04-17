@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -79,59 +80,105 @@ class StageServiceImplTest {
 
     @Test
     void testSaveFromForm() {
-        // ARRANGE - Préparer les données
         StageCreationForm form = new StageCreationForm(
                 "Stage Name",
                 "Description",
                 LocalDate.now(),
                 LocalDate.now().plusDays(3),
                 StageStatus.OPEN,
-                "user@example.com",
-                "Project Name"
+                "user@example.com"
         );
 
-        User user = new User();
-        Project project = new Project();
+        User responsable = new User();
 
-        when(userRepository.findByEmail(form.responsableEmail())).thenReturn(Optional.of(user));
-        when(projectRepository.findByName(form.projectName())).thenReturn(Optional.of(project));
+        when(userRepository.findByEmail(form.responsableEmail())).thenReturn(Optional.of(responsable));
         when(stageRepository.save(any(Stage.class))).thenAnswer(i -> i.getArgument(0));
 
-        // ACT - Exécuter la méthode à tester
         Stage result = stageService.saveFromForm(form);
 
-        // ASSERT - Vérifier les résultats
         assertNotNull(result);
         assertEquals("Stage Name", result.getName());
         assertEquals("Description", result.getDescription());
         assertEquals(form.startingDate(), result.getStartingDate());
         assertEquals(form.finishingDate(), result.getFinishingDate());
         assertEquals(StageStatus.OPEN, result.getStatus());
-        assertSame(user, result.getResponsable());
-        assertSame(project, result.getProject());
+        assertSame(responsable, result.getResponsable());
 
-        // Vérifie que le repository a bien été appelé
         verify(stageRepository).save(any(Stage.class));
     }
 
     @Test
-    void testUpdate() {
-        StageCreationDTO dto = new StageCreationDTO(1L,
-                "Stage Updated", "Desc", LocalDate.now(), LocalDate.now().plusDays(1),
-                StageStatus.CLOSED.CLOSED, "user@example.com", "Project Name"
+    void testSaveFromForm_ResponsableNotFound() {
+        StageCreationForm form = new StageCreationForm(
+                "Stage Name",
+                "Description",
+                LocalDate.now(),
+                LocalDate.now().plusDays(3),
+                StageStatus.OPEN,
+                "nonexistent@example.com"
         );
 
-        Stage existing = new Stage();
-        User user = new User();
-        Project project = new Project();
+        when(userRepository.findByEmail(form.responsableEmail())).thenReturn(Optional.empty());
 
-        when(stageRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(userRepository.findByEmail(dto.responsableEmail())).thenReturn(Optional.of(user));
-        when(projectRepository.findByName(dto.projectName())).thenReturn(Optional.of(project));
+        assertThrows(ResponseStatusException.class, () -> stageService.saveFromForm(form));
+    }
+
+    @Test
+    void testUpdateFromForm() {
+        StageCreationForm form = new StageCreationForm(
+                "Stage Updated",
+                "Updated description",
+                LocalDate.now(),
+                LocalDate.now().plusDays(2),
+                StageStatus.CLOSED,
+                "user@example.com"
+        );
+
+        Stage existingStage = new Stage();
+        User responsable = new User();
+
+        when(stageRepository.findById(1L)).thenReturn(Optional.of(existingStage));
+        when(userRepository.findByEmail(form.responsableEmail())).thenReturn(Optional.of(responsable));
         when(stageRepository.save(any(Stage.class))).thenAnswer(i -> i.getArgument(0));
 
-        Stage updated = stageService.update(dto, 1L);
+        Stage updated = stageService.updateFromForm(form, 1L);
 
         assertEquals("Stage Updated", updated.getName());
+        assertEquals("Updated description", updated.getDescription());
+        assertEquals(StageStatus.CLOSED, updated.getStatus());
+        assertSame(responsable, updated.getResponsable());
+    }
+
+    @Test
+    void testUpdateFromForm_StageNotFound() {
+        StageCreationForm form = new StageCreationForm(
+                "Stage Updated",
+                "Updated description",
+                LocalDate.now(),
+                LocalDate.now().plusDays(2),
+                StageStatus.CLOSED,
+                "user@example.com"
+        );
+
+        when(stageRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> stageService.updateFromForm(form, 1L));
+    }
+
+    @Test
+    void testUpdateFromForm_ResponsableNotFound() {
+        StageCreationForm form = new StageCreationForm(
+                "Stage Updated",
+                "Updated description",
+                LocalDate.now(),
+                LocalDate.now().plusDays(2),
+                StageStatus.CLOSED,
+                "user@example.com"
+        );
+
+        when(stageRepository.findById(1L)).thenReturn(Optional.of(new Stage()));
+        when(userRepository.findByEmail(form.responsableEmail())).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> stageService.updateFromForm(form, 1L));
     }
 }

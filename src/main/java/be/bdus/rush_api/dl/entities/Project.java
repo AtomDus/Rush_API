@@ -60,6 +60,7 @@ public class Project {
     @ManyToMany
     private List<RentingCompany> locationCompanies;
 
+    @Setter
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stage> stages = new ArrayList<>();
 
