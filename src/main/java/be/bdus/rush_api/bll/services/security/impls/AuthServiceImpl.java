@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -22,13 +24,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(User user) {
+        Optional<User> existingUserOpt = userRepository.findByEmail(user.getEmail());
 
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExistExeption(HttpStatus.NOT_ACCEPTABLE, "User already exist");
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            if (existingUser.getRole() == UserRole.NOT_USER) {
+                // Mise à jour du compte temporaire avec les vraies infos
+                existingUser.setFirstname(user.getFirstname());
+                existingUser.setLastname(user.getLastname());
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                existingUser.setRole(UserRole.USER);
+                existingUser.setAvailable(true);
+
+                userRepository.save(existingUser);
+                return;
+            } else {
+                throw new UserAlreadyExistExeption(HttpStatus.NOT_ACCEPTABLE, "User already exists");
+            }
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.USER);
+        user.setAvailable(true);
         userRepository.save(user);
     }
 

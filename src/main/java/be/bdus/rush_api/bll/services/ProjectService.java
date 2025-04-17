@@ -27,4 +27,10 @@ public interface ProjectService {
     Project saveFromForm(ProjectCreationForm projectForm);
 
     Project updateFromForm(ProjectCreationForm form, Long id);
+
+    Project addStageToProject(Long projectId, StageCreationForm stageForm);
+
+    Project removeStageFromProject(Long projectId, Long stageId);
+
+    Project addEmployeToProject(Long projectId, String email);
 }

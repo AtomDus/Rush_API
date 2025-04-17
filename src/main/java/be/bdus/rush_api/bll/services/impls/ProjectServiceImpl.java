@@ -1,14 +1,17 @@
 package be.bdus.rush_api.bll.services.impls;
 
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
+import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.bll.services.ProjectService;
 import be.bdus.rush_api.dal.repositories.PCompanyRepository;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
 import be.bdus.rush_api.dal.repositories.UserRepository;
 import be.bdus.rush_api.dl.entities.ProductionCompany;
 import be.bdus.rush_api.dl.entities.Project;
+import be.bdus.rush_api.dl.entities.Stage;
 import be.bdus.rush_api.dl.entities.User;
 import be.bdus.rush_api.dl.enums.StageStatus;
+import be.bdus.rush_api.dl.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -124,5 +127,64 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setProductionCompany(productionCompany);
 
         return projectRepository.save(existingProject);
+    }
+
+    @Override
+    public Project addStageToProject(Long projectId, StageCreationForm stageForm) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        User responsable = userRepository.findByEmail(stageForm.responsableEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
+
+        Stage stage = new Stage();
+        stage.setName(stageForm.name());
+        stage.setDescription(stageForm.description());
+        stage.setStartingDate(stageForm.startingDate());
+        stage.setFinishingDate(stageForm.finishingDate());
+        stage.setStatus(stageForm.status());
+        stage.setResponsable(responsable);
+        stage.setProject(project);
+
+        project.getStages().add(stage);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project removeStageFromProject(Long projectId, Long stageId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        project.getStages().removeIf(stage -> stage.getId().equals(stageId));
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project addEmployeToProject(Long projectId, String email) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            user = new User();
+            user.setEmail(email);
+            user.setFirstname("Temporary");
+            user.setLastname("User");
+            user.setRole(UserRole.NOT_USER);
+            user.setAvailable(false);
+            user = userRepository.save(user);
+        } else {
+            user.setRole(UserRole.STAFF);
+            userRepository.save(user);
+        }
+
+        if (!project.getEmployes().contains(user)) {
+            project.getEmployes().add(user);
+        }
+
+        return projectRepository.save(project);
     }
 }

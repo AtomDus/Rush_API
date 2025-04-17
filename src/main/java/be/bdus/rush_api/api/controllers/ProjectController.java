@@ -90,4 +90,31 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{projectId}/stages")
+    public ResponseEntity<Project> addStageToProject(
+            @PathVariable Long projectId,
+            @RequestBody StageCreationForm stageForm
+    ) {
+        Project updatedProject = projectService.addStageToProject(projectId, stageForm);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @DeleteMapping("/{projectId}/stages/{stageId}")
+    public ResponseEntity<Project> removeStageFromProject(
+            @PathVariable Long projectId,
+            @PathVariable Long stageId
+    ) {
+        Project updatedProject = projectService.removeStageFromProject(projectId, stageId);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @PostMapping("/{projectId}/employes/{email}")
+    public ResponseEntity<Project> addEmployeToProject(
+            @PathVariable Long projectId,
+            @PathVariable String email
+    ) {
+        Project updatedProject = projectService.addEmployeToProject(projectId, email);
+        return ResponseEntity.ok(updatedProject);
+    }
+
 }
