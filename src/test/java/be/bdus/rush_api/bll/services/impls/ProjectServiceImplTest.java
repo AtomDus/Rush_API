@@ -1,14 +1,13 @@
 package be.bdus.rush_api.bll.services.impls;
 
+import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
+import be.bdus.rush_api.dal.repositories.EmployeeRepository;
 import be.bdus.rush_api.dal.repositories.PCompanyRepository;
 import be.bdus.rush_api.dal.repositories.UserRepository;
-import be.bdus.rush_api.dl.entities.ProductionCompany;
-import be.bdus.rush_api.dl.entities.Project;
+import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
-import be.bdus.rush_api.dl.entities.Stage;
-import be.bdus.rush_api.dl.entities.User;
 import be.bdus.rush_api.dl.enums.StageStatus;
 import be.bdus.rush_api.dl.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +41,9 @@ class ProjectServiceImplTest {
 
     @Mock
     private PCompanyRepository productionRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private ProjectServiceImpl projectService;
@@ -284,53 +288,237 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void testAddEmployeToProject_ShouldAddExistingUser() {
-        String email = "existing@user.com";
-        User user = new User();
-        user.setEmail(email);
-        user.setRole(UserRole.NOT_USER);
+    void shouldAddExistingEmployeeToProject() {
+        Employee existingEmployee = new Employee();
+        existingEmployee.setEmail("existing@employee.com");
 
         Project project = new Project();
         project.setEmployes(new ArrayList<>());
 
-        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(userRepository.save(user)).thenReturn(user);
-        when(projectRepository.save(any(Project.class))).thenAnswer(i -> i.getArgument(0));
+        EmployeeForm form = new EmployeeForm(
+                "existing@employee.com", "John", "Doe", "0123456789", "Engineer", true
+        );
 
-        Project result = projectService.addEmployeToProject(1L, email);
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(employeeRepository.findByEmail(form.email())).thenReturn(Optional.of(existingEmployee));
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Project result = projectService.addEmployeToProject(1L, form);
 
         assertEquals(1, result.getEmployes().size());
-        assertEquals(UserRole.STAFF, user.getRole());
+        assertTrue(result.getEmployes().contains(existingEmployee));
     }
 
     @Test
-    void testAddEmployeToProject_ShouldCreateTempUser() {
-        String email = "new@user.com";
+    void shouldCreateAndAddNewEmployeeToProject() {
+        EmployeeForm form = new EmployeeForm(
+                "new@employee.com", "Alice", "Smith", "0987654321", "Manager", true
+        );
 
         Project project = new Project();
         project.setEmployes(new ArrayList<>());
 
-        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
-        when(projectRepository.save(any(Project.class))).thenAnswer(i -> i.getArgument(0));
+        Employee savedEmployee = new Employee();
+        savedEmployee.setEmail(form.email());
+        savedEmployee.setFirstname(form.firstname());
+        savedEmployee.setLastname(form.lastname());
+        savedEmployee.setPhoneNumber(form.phoneNumber());
+        savedEmployee.setJobTitle(form.jobTitle());
 
-        Project result = projectService.addEmployeToProject(1L, email);
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(employeeRepository.findByEmail(form.email())).thenReturn(Optional.empty());
+        when(employeeRepository.save(any(Employee.class))).thenReturn(savedEmployee);
+        when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Project result = projectService.addEmployeToProject(1L, form);
 
         assertEquals(1, result.getEmployes().size());
-        assertEquals(email, result.getEmployes().get(0).getEmail());
-        assertEquals(UserRole.NOT_USER, result.getEmployes().get(0).getRole());
+        assertEquals(form.email(), result.getEmployes().get(0).getEmail());
+        assertEquals(form.firstname(), result.getEmployes().get(0).getFirstname());
     }
 
     @Test
-    void testAddEmployeToProject_ProjectNotFound() {
-        when(projectRepository.findById(1L)).thenReturn(Optional.empty());
+    void shouldThrowIfProjectNotFound() {
+        EmployeeForm form = new EmployeeForm(
+                "nobody@ghost.com", "Ghost", "Nobody", "0000000000", "Phantom", true
+        );
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            projectService.addEmployeToProject(1L, "nobody@nowhere.com");
-        });
+        when(projectRepository.findById(999L)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> projectService.addEmployeToProject(999L, form)
+        );
 
         assertEquals("404 NOT_FOUND \"Project not found\"", exception.getMessage());
     }
+
+    @Test
+    public void testGetPendingProjects() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.PENDING);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.PENDING);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatus(pageable, StageStatus.PENDING)).thenReturn(projectPage);
+
+        Page<Project> result = projectService.getPendingProjects(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.PENDING, result.getContent().get(0).getStatus());
+    }
+
+    @Test
+    public void testGetOpenProjects() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.OPEN);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.OPEN);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatus(pageable, StageStatus.OPEN)).thenReturn(projectPage);
+
+        Page<Project> result = projectService.getOpenProjects(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.OPEN, result.getContent().get(0).getStatus());
+    }
+
+    @Test
+    public void testGetClosedProjects() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.CLOSED);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.CLOSED);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatus(pageable, StageStatus.CLOSED)).thenReturn(projectPage);
+
+        Page<Project> result = projectService.getClosedProjects(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.CLOSED, result.getContent().get(0).getStatus());
+    }
+
+    @Test
+    public void testGetProjectsByResponsable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Long responsableId = 1L;
+
+        User responsable = new User();
+        ReflectionTestUtils.setField(responsable, "id", responsableId);
+
+        Project project1 = new Project();
+        project1.setResponsable(responsable);
+
+        Project project2 = new Project();
+        project2.setResponsable(responsable);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByResponsable(pageable, responsableId)).thenReturn(projectPage);
+
+        Page<Project> result = projectService.getProjectsByResponsable(pageable, responsableId);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(responsableId, result.getContent().get(0).getResponsable().getId());
+    }
+
+    @Test
+    public void testGetPendingProjectsByResponsable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Long responsableId = 1L;
+
+        User responsable = new User();
+        ReflectionTestUtils.setField(responsable, "id", responsableId);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.PENDING);
+        project1.setResponsable(responsable);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.PENDING);
+        project2.setResponsable(responsable);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.PENDING, responsableId))
+                .thenReturn(projectPage);
+
+        Page<Project> result = projectService.getPendingProjectsByResponsable(pageable, responsableId);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.PENDING, result.getContent().get(0).getStatus());
+        assertEquals(responsableId, result.getContent().get(0).getResponsable().getId());
+    }
+
+    @Test
+    public void testGetOpenProjectsByResponsable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Long responsableId = 1L;
+
+        User responsable = new User();
+        ReflectionTestUtils.setField(responsable, "id", responsableId);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.OPEN);
+        project1.setResponsable(responsable);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.OPEN);
+        project2.setResponsable(responsable);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.OPEN, responsableId))
+                .thenReturn(projectPage);
+
+        Page<Project> result = projectService.getOpenProjectsByResponsable(pageable, responsableId);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.OPEN, result.getContent().get(0).getStatus());
+        assertEquals(responsableId, result.getContent().get(0).getResponsable().getId());
+    }
+
+    @Test
+    public void testGetClosedProjectsByResponsable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Long responsableId = 1L;
+
+        User responsable = new User();
+        ReflectionTestUtils.setField(responsable, "id", responsableId);
+
+        Project project1 = new Project();
+        project1.setStatus(StageStatus.CLOSED);
+        project1.setResponsable(responsable);
+
+        Project project2 = new Project();
+        project2.setStatus(StageStatus.CLOSED);
+        project2.setResponsable(responsable);
+
+        Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
+
+        when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.CLOSED, responsableId))
+                .thenReturn(projectPage);
+
+        Page<Project> result = projectService.getClosedProjectsByResponsable(pageable, responsableId);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(StageStatus.CLOSED, result.getContent().get(0).getStatus());
+        assertEquals(responsableId, result.getContent().get(0).getResponsable().getId());
+    }
+
 }

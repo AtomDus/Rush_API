@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/production-companies")
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "production", description = "Endpoints use for production company")
 public class ProductionCompanyController {
 

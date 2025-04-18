@@ -46,7 +46,7 @@ public class Project {
 
     @Setter
     @ManyToMany
-    private List<User> employes;
+    private List<Employee> employes;
 
     @Setter
     @ManyToOne
@@ -85,7 +85,7 @@ public class Project {
     private String place;
 
     public Project(String name, String description, LocalDate startingDate, LocalDate finishingDate, StageStatus status, User responsable,
-                   List<User> employes, ProductionCompany productionCompany, List<Equipement> equipements, List<Stage> stages,
+                   List<Employee> employes, ProductionCompany productionCompany, List<Equipement> equipements, List<Stage> stages,
                    int nbOfStages, double pourcentageDone, int duration, int budget, String place) {
         this.name = name;
         this.description = description;

@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -181,4 +182,65 @@ class StageServiceImplTest {
 
         assertThrows(ResponseStatusException.class, () -> stageService.updateFromForm(form, 1L));
     }
+
+    @Test
+    public void testValidateStageDates_withValidDates() {
+        Project project = mock(Project.class);
+        Stage stage = mock(Stage.class);
+
+        LocalDate projectStart = LocalDate.of(2025, 1, 1);
+        LocalDate projectEnd = LocalDate.of(2025, 12, 31);
+        when(project.getStartingDate()).thenReturn(projectStart);
+        when(project.getFinishingDate()).thenReturn(projectEnd);
+
+        LocalDate stageStart = LocalDate.of(2025, 6, 1);
+        LocalDate stageEnd = LocalDate.of(2025, 6, 15);
+        when(stage.getStartingDate()).thenReturn(stageStart);
+        when(stage.getFinishingDate()).thenReturn(stageEnd);
+
+        assertDoesNotThrow(() -> stageService.validateStageDates(stage, project));
+    }
+
+    @Test
+    public void testValidateStageDates_withStageDatesOutOfRange() {
+        Project project = mock(Project.class);
+        Stage stage = mock(Stage.class);
+
+        LocalDate projectStart = LocalDate.of(2025, 1, 1);
+        LocalDate projectEnd = LocalDate.of(2025, 12, 31);
+        when(project.getStartingDate()).thenReturn(projectStart);
+        when(project.getFinishingDate()).thenReturn(projectEnd);
+
+        LocalDate stageStart = LocalDate.of(2026, 1, 1);
+        LocalDate stageEnd = LocalDate.of(2026, 1, 15);
+        when(stage.getStartingDate()).thenReturn(stageStart);
+        when(stage.getFinishingDate()).thenReturn(stageEnd);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> stageService.validateStageDates(stage, project));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("Stage dates must be within project range", exception.getReason());
+    }
+
+    @Test
+    public void testValidateStageDates_withStageStartAfterEnd() {
+        Project project = mock(Project.class);
+        Stage stage = mock(Stage.class);
+
+        LocalDate projectStart = LocalDate.of(2025, 1, 1);
+        LocalDate projectEnd = LocalDate.of(2025, 12, 31);
+        when(project.getStartingDate()).thenReturn(projectStart);
+        when(project.getFinishingDate()).thenReturn(projectEnd);
+
+        LocalDate stageStart = LocalDate.of(2025, 6, 15);
+        LocalDate stageEnd = LocalDate.of(2025, 6, 1);
+        when(stage.getStartingDate()).thenReturn(stageStart);
+        when(stage.getFinishingDate()).thenReturn(stageEnd);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> stageService.validateStageDates(stage, project));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("Stage starting date cannot be after finishing date", exception.getReason());
+    }
+
 }

@@ -1,9 +1,11 @@
 package be.bdus.rush_api.bll.services;
 
+import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.dl.entities.Project;
 import be.bdus.rush_api.dl.entities.Stage;
+import be.bdus.rush_api.dl.enums.StageStatus;
 import be.bdus.rush_api.il.request.SearchParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +34,20 @@ public interface ProjectService {
 
     Project removeStageFromProject(Long projectId, Long stageId);
 
-    Project addEmployeToProject(Long projectId, String email);
+    Project addEmployeToProject(Long projectId, EmployeeForm form);
+
+    Page<Project> getPendingProjects(Pageable pageable);
+
+    Page<Project> getOpenProjects(Pageable pageable);
+
+    Page<Project> getClosedProjects(Pageable pageable);
+
+    Page<Project> getProjectsByResponsable(Pageable pageable, Long id);
+
+    Page<Project> getPendingProjectsByResponsable(Pageable pageable, Long id);
+
+    Page<Project> getOpenProjectsByResponsable(Pageable pageable, Long id);
+
+    Page<Project> getClosedProjectsByResponsable(Pageable pageable, Long id);
+
 }

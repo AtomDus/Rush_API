@@ -1,19 +1,19 @@
 package be.bdus.rush_api.bll.services.impls;
 
+import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.bll.services.ProjectService;
+import be.bdus.rush_api.dal.repositories.EmployeeRepository;
 import be.bdus.rush_api.dal.repositories.PCompanyRepository;
 import be.bdus.rush_api.dal.repositories.ProjectRepository;
 import be.bdus.rush_api.dal.repositories.UserRepository;
-import be.bdus.rush_api.dl.entities.ProductionCompany;
-import be.bdus.rush_api.dl.entities.Project;
-import be.bdus.rush_api.dl.entities.Stage;
-import be.bdus.rush_api.dl.entities.User;
+import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 import be.bdus.rush_api.dl.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final PCompanyRepository productionRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public Page<Project> findAll(Pageable pageable) {
@@ -161,29 +162,60 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project addEmployeToProject(Long projectId, String email) {
+    public Project addEmployeToProject(Long projectId, EmployeeForm form) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
 
-        User user = userRepository.findByEmail(email).orElse(null);
+        Employee employee = employeeRepository.findByEmail(form.email()).orElseGet(() -> {
+            Employee newEmployee = new Employee();
+            newEmployee.setEmail(form.email());
+            newEmployee.setFirstname(form.firstname());
+            newEmployee.setLastname(form.lastname());
+            newEmployee.setPhoneNumber(form.phoneNumber());
+            newEmployee.setJobTitle(form.jobTitle());
+            return employeeRepository.save(newEmployee);
+        });
 
-        if (user == null) {
-            user = new User();
-            user.setEmail(email);
-            user.setFirstname("Temporary");
-            user.setLastname("User");
-            user.setRole(UserRole.NOT_USER);
-            user.setAvailable(false);
-            user = userRepository.save(user);
-        } else {
-            user.setRole(UserRole.STAFF);
-            userRepository.save(user);
-        }
-
-        if (!project.getEmployes().contains(user)) {
-            project.getEmployes().add(user);
+        if (!project.getEmployes().contains(employee)) {
+            project.getEmployes().add(employee);
         }
 
         return projectRepository.save(project);
     }
+
+    @Override
+    public Page<Project> getPendingProjects(Pageable pageable) {
+        return projectRepository.findByStatus(pageable, StageStatus.PENDING);
+    }
+
+    @Override
+    public Page<Project> getOpenProjects(Pageable pageable) {
+        return projectRepository.findByStatus(pageable, StageStatus.OPEN);
+    }
+
+    @Override
+    public Page<Project> getClosedProjects(Pageable pageable) {
+        return projectRepository.findByStatus(pageable, StageStatus.CLOSED);
+    }
+
+    @Override
+    public Page<Project> getProjectsByResponsable(Pageable pageable, Long id) {
+        return projectRepository.findByResponsable(pageable, id);
+    }
+
+    @Override
+    public Page<Project> getPendingProjectsByResponsable(Pageable pageable, Long id) {
+        return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.PENDING, id);
+    }
+
+    @Override
+    public Page<Project> getOpenProjectsByResponsable(Pageable pageable, Long id) {
+        return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.OPEN, id);
+    }
+
+    @Override
+    public Page<Project> getClosedProjectsByResponsable(Pageable pageable, Long id) {
+        return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.CLOSED, id);
+    }
+
 }

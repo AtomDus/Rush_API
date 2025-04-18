@@ -14,11 +14,13 @@ public interface StageService {
 
     Stage findById(Long id);
 
-    Stage update(StageCreationDTO dto, Long id);
+    //Stage update(StageCreationDTO dto, Long id);
 
     void delete(Long id);
 
     Stage saveFromForm(StageCreationForm stageForm);
 
     Stage updateFromForm(StageCreationForm form, Long id);
+
+    void validateStageDates(Stage stage, Project project);
 }

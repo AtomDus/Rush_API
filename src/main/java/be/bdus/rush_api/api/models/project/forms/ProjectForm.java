@@ -31,7 +31,7 @@ public record ProjectForm(
         User responsable,
 
         @NotNull
-        List<User> employes,
+        List<Employee> employes,
 
         @NotNull
         ProductionCompany productionCompany,

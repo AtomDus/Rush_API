@@ -36,44 +36,6 @@ public class StageServiceImpl implements StageService {
         return stageRepository.findById(id).orElseThrow(() -> new RuntimeException("Stage not found"));
     }
 
-//    @Override
-//    public Stage createStage(StageCreationDTO dto) {
-//        Stage stage = new Stage();
-//        stage.setName(dto.name());
-//        stage.setDescription(dto.description());
-//        stage.setStartingDate(dto.startingDate());
-//        stage.setFinishingDate(dto.finishingDate());
-//        stage.setStatus(dto.status());
-//
-//        User responsable = userRepository.findByEmail(dto.responsableEmail())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
-//        stage.setResponsable(responsable);
-//
-//        Project project = projectRepository.findByName(dto.projectName())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
-//        stage.setProject(project);
-//
-//        return stageRepository.save(stage);
-//    }
-
-    @Override
-    public Stage update(StageCreationDTO dto, Long id) {
-        Stage existingStage = stageRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stage not found"));
-
-        existingStage.setName(dto.name());
-        existingStage.setDescription(dto.description());
-        existingStage.setStartingDate(dto.startingDate());
-        existingStage.setFinishingDate(dto.finishingDate());
-        existingStage.setStatus(dto.status());
-
-        User responsable = userRepository.findByEmail(dto.responsableEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Responsable not found"));
-        existingStage.setResponsable(responsable);
-
-        return stageRepository.save(existingStage);
-    }
-
     @Override
     public void delete(Long id) {
         stageRepository.deleteById(id);
@@ -115,7 +77,8 @@ public class StageServiceImpl implements StageService {
         return stageRepository.save(existingStage);
     }
 
-    private void validateStageDates(Stage stage, Project project) {
+    @Override
+    public void validateStageDates(Stage stage, Project project) {
         if (stage.getStartingDate().isBefore(project.getStartingDate()) ||
                 stage.getFinishingDate().isAfter(project.getFinishingDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stage dates must be within project range");

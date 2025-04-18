@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/renting-company")
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Renting Company", description = "Endpoints use for renting company")
 public class RentingCompanyController {
 

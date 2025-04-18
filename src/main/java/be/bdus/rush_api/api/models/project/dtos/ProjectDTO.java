@@ -1,5 +1,6 @@
 package be.bdus.rush_api.api.models.project.dtos;
 
+import be.bdus.rush_api.api.models.employee.dtos.EmployeeDTO;
 import be.bdus.rush_api.api.models.stage.dtos.StageCreationDTO;
 import be.bdus.rush_api.api.models.stage.dtos.StageDTO;
 import be.bdus.rush_api.api.models.user.dtos.UserDTO;
@@ -17,7 +18,7 @@ public record ProjectDTO (
         LocalDate finishingDate,
         StageStatus status,
         UserDTO responsable,
-        List<UserDTO> employes,
+        List<EmployeeDTO> employes,
         ProductionCompany productionCompany,
         List<Equipement> equipements,
         List<RentingCompany> locationCompanies,
@@ -33,8 +34,8 @@ public record ProjectDTO (
                 .map(StageCreationDTO::fromStage)
                 .toList();
 
-        List<UserDTO> userDTOs = project.getEmployes().stream()
-                .map(UserDTO::fromUser)
+        List<EmployeeDTO> employeeDTOS = project.getEmployes().stream()
+                .map(EmployeeDTO::fromEmployee)
                 .toList();
 
         UserDTO responsableDTO = UserDTO.fromUser(project.getResponsable());
@@ -47,7 +48,7 @@ public record ProjectDTO (
                 project.getFinishingDate(),
                 project.getStatus(),
                 responsableDTO,
-                userDTOs,
+                employeeDTOS,
                 project.getProductionCompany(),
                 project.getEquipements(),
                 project.getLocationCompanies(),

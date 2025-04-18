@@ -21,19 +21,21 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final StageRepository stageRepository;
+    private final EmployeeRepository employeeRepository;
 
     public DataInitializer(RCompanyRepository locationCompanyRepository,
                            PCompanyRepository productionCompanyRepository,
                            EquipementRepository equipementRepository,
                            UserRepository userRepository,
                            ProjectRepository projectRepository,
-                           StageRepository stageRepository) {
+                           StageRepository stageRepository, EmployeeRepository employeeRepository) {
         this.locationCompanyRepository = locationCompanyRepository;
         this.productionCompanyRepository = productionCompanyRepository;
         this.equipementRepository = equipementRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.stageRepository = stageRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -150,7 +152,7 @@ public class DataInitializer implements CommandLineRunner {
     private void loadStagesAndProjects() {
         if (projectRepository.count() == 0 && userRepository.count() >= 2 && productionCompanyRepository.count() > 0) {
             User responsable = userRepository.findAll().get(0);
-            List<User> employes = userRepository.findAll();
+            List<Employee> employes = employeeRepository.findAll();
             ProductionCompany prod = productionCompanyRepository.findAll().get(0);
             List<User> users = userRepository.findAll();
             List<Equipement> equipements = equipementRepository.findAll();
@@ -176,7 +178,7 @@ public class DataInitializer implements CommandLineRunner {
             s1.setName("Préparation Matériel");
             s1.setDescription("Vérification et préparation du matériel.");
             s1.setStartingDate(LocalDate.of(2025, 4, 16));
-            s1.setStatus(StageStatus.IN_PROGRESS);
+            s1.setStatus(StageStatus.OPEN);
             s1.setResponsable(users.get(0));
             Stage s2 = new Stage();
             s2.setName("Tournage");
@@ -207,7 +209,7 @@ public class DataInitializer implements CommandLineRunner {
             s3.setName("Préparation Matériel");
             s3.setDescription("Vérification et préparation du matériel.");
             s3.setStartingDate(LocalDate.of(2025, 4, 16));
-            s3.setStatus(StageStatus.IN_PROGRESS);
+            s3.setStatus(StageStatus.PENDING);
             s3.setResponsable(users.get(0));
             Stage s4 = new Stage();
             s4.setName("Tournage");
