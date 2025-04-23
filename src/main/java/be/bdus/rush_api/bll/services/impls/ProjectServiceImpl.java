@@ -199,22 +199,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Page<Project> getProjectsByResponsable(Pageable pageable, Long id) {
-        return projectRepository.findByResponsable(pageable, id);
+    public Page<Project> getProjectsByResponsableId(Pageable pageable, Long id) {
+        return projectRepository.findByResponsableId(pageable, id);
     }
 
     @Override
-    public Page<Project> getPendingProjectsByResponsable(Pageable pageable, Long id) {
+    public Page<Project> getPendingProjectsByResponsableId(Pageable pageable, Long id) {
         return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.PENDING, id);
     }
 
     @Override
-    public Page<Project> getOpenProjectsByResponsable(Pageable pageable, Long id) {
+    public Page<Project> getOpenProjectsByResponsableId(Pageable pageable, Long id) {
         return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.OPEN, id);
     }
 
     @Override
-    public Page<Project> getClosedProjectsByResponsable(Pageable pageable, Long id) {
+    public Page<Project> getClosedProjectsByResponsableId(Pageable pageable, Long id) {
         return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.CLOSED, id);
     }
 

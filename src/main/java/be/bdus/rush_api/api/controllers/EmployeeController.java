@@ -25,7 +25,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @Operation(summary = "Listing users by id", description = "Let the user search an user with its id")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDTO> getById(@RequestParam Long id) {
         return employeeService.findById(id)
@@ -34,7 +34,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Listing users by email", description = "Let the user search an user with its email")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/email/{email}")
     public ResponseEntity<EmployeeDTO> getByEmail(@RequestParam String email) {
         return employeeService.findByEmail(email)
@@ -43,7 +43,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Listing users by phone number", description = "Let the user search an user with its phone number")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/phone-number/{phoneNumber}")
     public ResponseEntity<EmployeeDTO> getByPhoneNumber(@RequestParam String phoneNumber) {
         return employeeService.findByPhoneNumber(phoneNumber)
@@ -52,7 +52,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Listing users by job title", description = "Let the user search an user with its job title")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/by-job-title/{jobTitle}")
     public ResponseEntity<Page<EmployeeDTO>> getByJobTitle(
             @RequestParam String jobTitle,
@@ -74,7 +74,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Listing all available users", description = "Use to list all available users")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @GetMapping("/available")
     public ResponseEntity<Page<EmployeeDTO>> getAvailableUsers(
             @RequestParam(defaultValue = "1") int page,
@@ -92,7 +92,7 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Setting a user as available", description = "Use to set a user as available")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping("/users/{id}/available")
     public ResponseEntity<Void> setUserAvailable(@PathVariable Long id) {
         boolean updated = employeeService.setUserAvailable(id);

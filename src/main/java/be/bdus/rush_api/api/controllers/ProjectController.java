@@ -32,7 +32,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/projects")
 
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "project", description = "Endpoints use for projects")
 public class ProjectController {
 
@@ -40,7 +40,7 @@ public class ProjectController {
     private final EmployeeService employeeService;
 
     @Operation(summary = "Listing all projects", description = "Use to list all projects")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<CustomPage<ProjectDTO>> getAllProject(
             @RequestParam(defaultValue = "1") int page,
@@ -57,7 +57,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing projects by id", description = "Let the user search an projects with its id")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getById(@PathVariable  Long id) {
         Project Project = projectService.findById(id);
@@ -65,7 +65,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Adding a project", description = "Use to add a project")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PostMapping("/add")
     public ResponseEntity<ProjectDTO> save(@RequestBody ProjectCreationForm form) {
         Project savedProject = projectService.saveFromForm(form);
@@ -73,7 +73,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project", description = "Use to update a project")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> update(@RequestBody ProjectCreationForm form, @PathVariable Long id) {
         Project savedProject = projectService.updateFromForm(form, id);
@@ -81,7 +81,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Deleting a project", description = "Use to delete a project")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         projectService.delete(id);
@@ -89,7 +89,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project status", description = "Set status to closed")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping
     public ResponseEntity<Void> updateProjectStatus(@PathVariable Long id) {
         projectService.updateProjectStatus(id);
@@ -189,20 +189,23 @@ public class ProjectController {
 
     @Operation(summary = "Listing all projects by responsable", description = "Use to list all projects by responsable")
     @GetMapping("/by-responsable/{id}")
-    public ResponseEntity<CustomPage<ProjectDTO>> getByResponsable(
+    public ResponseEntity<Page<ProjectDTO>> getByResponsable(
             @PathVariable Long id,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        Page<Project> projects = projectService.getProjectsByResponsable(
-                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
-        );
-        List<ProjectDTO> dtos = projects.getContent().stream()
-                .map(ProjectDTO::fromProject)
-                .toList();
-        CustomPage<ProjectDTO> result = new CustomPage<>(dtos,projects.getTotalPages(),projects.getNumber() + 1);
-        return ResponseEntity.ok(result);
+        // Assurer une gestion correcte de la pagination et du tri
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
+
+        // Récupérer la page de projets par responsable
+        Page<Project> projectPage = projectService.getProjectsByResponsableId(pageable, id);
+
+        // Convertir la page de projets en une page de ProjectDTO
+        Page<ProjectDTO> projectDTOPage = projectPage.map(ProjectDTO::fromProject);
+
+        // Retourner la page de ProjectDTO
+        return ResponseEntity.ok(projectDTOPage);
     }
 
     @Operation(summary = "Listing all pending projects by responsable", description = "Use to list all pending projects by responsable")
@@ -213,7 +216,9 @@ public class ProjectController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        Page<Project> projects = projectService.getPendingProjectsByResponsable(
+
+
+        Page<Project> projects = projectService.getPendingProjectsByResponsableId(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
         );
         List<ProjectDTO> dtos = projects.getContent().stream()
@@ -231,7 +236,7 @@ public class ProjectController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        Page<Project> projects = projectService.getOpenProjectsByResponsable(
+        Page<Project> projects = projectService.getOpenProjectsByResponsableId(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
         );
         List<ProjectDTO> dtos = projects.getContent().stream()
@@ -249,7 +254,7 @@ public class ProjectController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        Page<Project> projects = projectService.getClosedProjectsByResponsable(
+        Page<Project> projects = projectService.getClosedProjectsByResponsableId(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
         );
         List<ProjectDTO> dtos = projects.getContent().stream()

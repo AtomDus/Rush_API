@@ -29,7 +29,7 @@ public class ProductionCompanyController {
     private final ProductionService productionService;
 
     @Operation(summary = "listing all production companies", description = "Use to list all production companies")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<CustomPage<CompanyDTO>> getAllProductionCompanies(
             @RequestParam(defaultValue = "1") int page,
@@ -46,7 +46,7 @@ public class ProductionCompanyController {
     }
 
     @Operation(summary = "listing a production company by id", description = "Use to list a production company by id")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDTO> getById(@RequestParam Long id) {
         ProductionCompany productionCompany = productionService.findById(id);
@@ -54,7 +54,7 @@ public class ProductionCompanyController {
     }
 
     @Operation(summary = "listing a production company by name", description = "Use to list a production company by name")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/name/{name}")
     public ResponseEntity<CompanyDTO> getByName(@RequestParam String name) {
         return productionService.findByName(name)
@@ -63,14 +63,14 @@ public class ProductionCompanyController {
     }
 
     @Operation(summary = "adding a production company", description = "Use to add a production company")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PostMapping("/add")
     public ResponseEntity<CompanyDTO> save(@RequestBody PCompanyForm productionCompany) {
         return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.save(productionCompany.toCompany())));
     }
 
     @Operation(summary = "deleting a production company", description = "Use to delete a production company")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productionService.delete(id);
@@ -78,7 +78,7 @@ public class ProductionCompanyController {
     }
 
     @Operation(summary = "updating a production company", description = "Use to update a production company")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody PCompanyForm productionCompany) {
         return ResponseEntity.ok(CompanyDTO.fromProductionCompany(productionService.update(productionCompany.toCompany(), id)));

@@ -16,7 +16,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 
     Page<Project> findByStatus( Pageable pageable, StageStatus status);
 
-    Page<Project> findByResponsable(Pageable pageable, Long Responsable_id);
+    Page<Project> findByResponsableId(Pageable pageable, Long Responsable_id);
 
     Page<Project> findByStatusAndResponsableId(Pageable pageable, StageStatus status, Long responsableId);
 }

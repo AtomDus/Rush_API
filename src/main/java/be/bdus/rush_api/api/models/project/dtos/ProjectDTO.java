@@ -8,6 +8,7 @@ import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 public record ProjectDTO (
@@ -34,7 +35,12 @@ public record ProjectDTO (
                 .map(StageCreationDTO::fromStage)
                 .toList();
 
-        List<EmployeeDTO> employeeDTOS = project.getEmployes().stream()
+        List<Employee> employees = project.getEmployes();
+        if (employees == null) {
+            employees = Collections.emptyList(); // Assurez-vous que la liste n'est jamais nulle
+        }
+
+        List<EmployeeDTO> employeeDTOS = employees.stream()
                 .map(EmployeeDTO::fromEmployee)
                 .toList();
 

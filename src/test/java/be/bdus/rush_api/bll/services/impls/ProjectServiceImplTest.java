@@ -429,9 +429,9 @@ class ProjectServiceImplTest {
 
         Page<Project> projectPage = new PageImpl<>(List.of(project1, project2), pageable, 2);
 
-        when(projectRepository.findByResponsable(pageable, responsableId)).thenReturn(projectPage);
+        when(projectRepository.findByResponsableId(pageable, responsableId)).thenReturn(projectPage);
 
-        Page<Project> result = projectService.getProjectsByResponsable(pageable, responsableId);
+        Page<Project> result = projectService.getProjectsByResponsableId(pageable, responsableId);
 
         assertEquals(2, result.getTotalElements());
         assertEquals(responsableId, result.getContent().get(0).getResponsable().getId());
@@ -458,7 +458,7 @@ class ProjectServiceImplTest {
         when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.PENDING, responsableId))
                 .thenReturn(projectPage);
 
-        Page<Project> result = projectService.getPendingProjectsByResponsable(pageable, responsableId);
+        Page<Project> result = projectService.getPendingProjectsByResponsableId(pageable, responsableId);
 
         assertEquals(2, result.getTotalElements());
         assertEquals(StageStatus.PENDING, result.getContent().get(0).getStatus());
@@ -486,7 +486,7 @@ class ProjectServiceImplTest {
         when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.OPEN, responsableId))
                 .thenReturn(projectPage);
 
-        Page<Project> result = projectService.getOpenProjectsByResponsable(pageable, responsableId);
+        Page<Project> result = projectService.getOpenProjectsByResponsableId(pageable, responsableId);
 
         assertEquals(2, result.getTotalElements());
         assertEquals(StageStatus.OPEN, result.getContent().get(0).getStatus());
@@ -514,7 +514,7 @@ class ProjectServiceImplTest {
         when(projectRepository.findByStatusAndResponsableId(pageable, StageStatus.CLOSED, responsableId))
                 .thenReturn(projectPage);
 
-        Page<Project> result = projectService.getClosedProjectsByResponsable(pageable, responsableId);
+        Page<Project> result = projectService.getClosedProjectsByResponsableId(pageable, responsableId);
 
         assertEquals(2, result.getTotalElements());
         assertEquals(StageStatus.CLOSED, result.getContent().get(0).getStatus());

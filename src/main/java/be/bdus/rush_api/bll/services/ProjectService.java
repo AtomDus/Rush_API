@@ -42,12 +42,12 @@ public interface ProjectService {
 
     Page<Project> getClosedProjects(Pageable pageable);
 
-    Page<Project> getProjectsByResponsable(Pageable pageable, Long id);
+    Page<Project> getProjectsByResponsableId(Pageable pageable, Long id);
 
-    Page<Project> getPendingProjectsByResponsable(Pageable pageable, Long id);
+    Page<Project> getPendingProjectsByResponsableId(Pageable pageable, Long id);
 
-    Page<Project> getOpenProjectsByResponsable(Pageable pageable, Long id);
+    Page<Project> getOpenProjectsByResponsableId(Pageable pageable, Long id);
 
-    Page<Project> getClosedProjectsByResponsable(Pageable pageable, Long id);
+    Page<Project> getClosedProjectsByResponsableId(Pageable pageable, Long id);
 
 }
