@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record RegisterForm(
+        @NotBlank@Size(max = 50)
+        String username,
         @NotBlank @Size(max = 50)
         String firstname,
         @NotBlank @Size(max = 50)
@@ -31,6 +33,7 @@ public record RegisterForm(
 
     public User toUser() {
         return new User(
+                username,
                 firstname,
                 lastname,
                 email,

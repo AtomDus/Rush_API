@@ -73,28 +73,28 @@ public class DataInitializer implements CommandLineRunner {
 
     private void loadUsers() {
         if (userRepository.count() == 0) {
-            User user1 = new User("Jean", "Dupont", "jean.dupont@mail.com", passwordEncoder.encode("pass123"));
+            User user1 = new User("JeaDup", "Jean", "Dupont", "jean.dupont@mail.com", passwordEncoder.encode("pass123"));
             user1.setPhoneNumber("123456789");
             user1.setJobTitle("Chef de projet");
             user1.setAvailable(true);
             user1.setStatus(EmployeStatus.ACTIVE);
             user1.setRole(UserRole.ADMIN);
 
-            User user2 = new User("Marie", "Curie", "marie.curie@mail.com", passwordEncoder.encode("pass123"));
+            User user2 = new User("MarCur","Marie", "Curie", "marie.curie@mail.com", passwordEncoder.encode("pass123"));
             user2.setPhoneNumber("987654321");
             user2.setJobTitle("Technicienne");
             user2.setAvailable(true);
             user2.setStatus(EmployeStatus.ACTIVE);
             user2.setRole(UserRole.USER);
 
-            User user3 = new User("Paul", "Verlaine", "paul.v@mail.com", passwordEncoder.encode("pass123"));
+            User user3 = new User("PauVer","Paul", "Verlaine", "paul.v@mail.com", passwordEncoder.encode("pass123"));
             user3.setPhoneNumber("667788990");
             user3.setJobTitle("Assistant plateau");
             user3.setAvailable(true);
             user3.setStatus(EmployeStatus.INACTIVE);
             user3.setRole(UserRole.USER);
 
-            User user4 = new User("Claire", "Beauvoir", "claire.b@mail.com", passwordEncoder.encode("pass123"));
+            User user4 = new User("ClaBea","Claire", "Beauvoir", "claire.b@mail.com", passwordEncoder.encode("pass123"));
             user4.setPhoneNumber("445566778");
             user4.setJobTitle("Directrice artistique");
             user4.setAvailable(true);

@@ -6,6 +6,7 @@ import be.bdus.rush_api.dl.enums.UserRole;
 
 public record UserDTO(
         Long id,
+        String username,
         String lastname,
         String firstname,
         String email,
@@ -18,6 +19,7 @@ public record UserDTO(
     public static UserDTO fromUser(User user) {
         return new UserDTO(
                 user.getId(),
+                user.getUsername(),
                 user.getLastname(),
                 user.getFirstname(),
                 user.getEmail(),

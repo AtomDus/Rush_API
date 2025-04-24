@@ -33,7 +33,7 @@ public class JwtUtils {
 
     public String generateToken(User user) {
         return this.builder
-                .setSubject(user.getFirstname())
+                .setSubject(user.getUsername())
                 .claim("id",user.getId())
                 .claim("role",user.getRole())
                 .setIssuedAt(new Date())

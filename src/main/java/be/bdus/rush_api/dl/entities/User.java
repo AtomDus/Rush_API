@@ -3,6 +3,9 @@ package be.bdus.rush_api.dl.entities;
 import be.bdus.rush_api.dl.enums.EmployeStatus;
 import be.bdus.rush_api.dl.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -15,6 +18,10 @@ public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Setter
+    @Column(nullable = false)
+    private String username;
 
     @Setter
     @Column(nullable = false)
@@ -75,6 +82,20 @@ public class User {
         this.status = status;
     }
 
+    public User(String username, String firstname, String lastname, String email, String phoneNumber,  String jobTitle, boolean isAvailable,  EmployeStatus status,  String password) {
+        this(firstname, lastname, email, password);
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+        this.jobTitle = jobTitle;
+        this.available = isAvailable;
+        this.status = status;
+    }
+
+    public User(String username, String firstname, String lastname, String email, String password) {
+        this(firstname, lastname, email, password);
+        this.username = username;
+    }
+
     public String getFullName() {
         return this.firstname + " " + this.lastname;
     }
@@ -83,4 +104,5 @@ public class User {
         this.firstname = firstName;
         this.lastname = lastName;
     }
+
 }
