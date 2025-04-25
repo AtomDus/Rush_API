@@ -97,12 +97,12 @@ public class ProjectController {
     }
 
     @Operation(summary = "Adding a stage to a project", description = "Use to add a stage to a project")
-    @PostMapping("/{projectId}/stages")
+    @PostMapping("/{id}/stages")
     public ResponseEntity<ProjectDTO> addStageToProject(
-            @PathVariable Long projectId,
+            @PathVariable Long id,
             @RequestBody StageCreationForm stageForm
     ) {
-        Project updatedProject = projectService.addStageToProject(projectId, stageForm);
+        Project updatedProject = projectService.addStageToProject(id, stageForm);
         return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
     }
 
@@ -117,12 +117,12 @@ public class ProjectController {
     }
 
     @Operation(summary = "Add an employee to a project", description = "Provide employee details")
-    @PostMapping("/{projectId}/employes")
+    @PostMapping("/{id}/employes")
     public ResponseEntity<ProjectDTO> addEmployeToProject(
-            @PathVariable Long projectId,
+            @PathVariable Long id,
             @RequestBody EmployeeForm form
     ) {
-        Project updatedProject = projectService.addEmployeToProject(projectId, form);
+        Project updatedProject = projectService.addEmployeToProject(id, form);
         return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
     }
 
