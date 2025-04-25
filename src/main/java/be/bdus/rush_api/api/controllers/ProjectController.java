@@ -3,6 +3,7 @@ package be.bdus.rush_api.api.controllers;
 import be.bdus.rush_api.api.models.CustomPage;
 import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
 import be.bdus.rush_api.api.models.equipement.dtos.EquipementDTO;
+import be.bdus.rush_api.api.models.equipement.forms.EquipementForm;
 import be.bdus.rush_api.api.models.project.dtos.ProjectDTO;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectForm;
@@ -123,6 +124,16 @@ public class ProjectController {
             @RequestBody EmployeeForm form
     ) {
         Project updatedProject = projectService.addEmployeToProject(id, form);
+        return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
+    }
+
+    @Operation(summary = "Add an equipment to a project", description = "Provide equipment details")
+    @PostMapping("/{id}/equipements")
+    public ResponseEntity<ProjectDTO> addEquipmentToProject(
+            @PathVariable Long id,
+            @RequestBody EquipementForm form
+    ) {
+        Project updatedProject = projectService.addEquipmentToProject(id, form);
         return ResponseEntity.ok(ProjectDTO.fromProject(updatedProject));
     }
 

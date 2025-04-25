@@ -1,13 +1,12 @@
 package be.bdus.rush_api.bll.services.impls;
 
 import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
+import be.bdus.rush_api.api.models.equipement.dtos.EquipementDTO;
+import be.bdus.rush_api.api.models.equipement.forms.EquipementForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.bll.services.ProjectService;
-import be.bdus.rush_api.dal.repositories.EmployeeRepository;
-import be.bdus.rush_api.dal.repositories.PCompanyRepository;
-import be.bdus.rush_api.dal.repositories.ProjectRepository;
-import be.bdus.rush_api.dal.repositories.UserRepository;
+import be.bdus.rush_api.dal.repositories.*;
 import be.bdus.rush_api.dl.entities.*;
 import be.bdus.rush_api.dl.enums.StageStatus;
 import be.bdus.rush_api.dl.enums.UserRole;
@@ -30,6 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     private final PCompanyRepository productionRepository;
     private final EmployeeRepository employeeRepository;
+    private final EquipementRepository equipementRepository;
 
     @Override
     public Page<Project> findAll(Pageable pageable) {
@@ -216,6 +216,36 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Page<Project> getClosedProjectsByResponsableId(Pageable pageable, Long id) {
         return projectRepository.findByStatusAndResponsableId(pageable, StageStatus.CLOSED, id);
+    }
+
+    @Override
+    public Project addEquipmentToProject(Long projectId, EquipementForm equipementForm) {
+        // Récupérer le projet depuis la base de données
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        // Créer un nouvel équipement à partir du DTO
+        Equipement equipement = new Equipement();
+        equipement.setName(equipementForm.name());
+        equipement.setDescription(equipementForm.description());
+        equipement.setCondition(equipementForm.condition());
+        equipement.setModel(equipementForm.model());
+        equipement.setStock(equipementForm.stock());
+        equipement.setStockLocation(equipementForm.stockLocation());
+        equipement.setType(equipementForm.type());
+        equipement.setDateAcquisition(LocalDate.now());
+        equipement.setSerialNumber(equipementForm.serialNumber());
+
+        // Sauvegarder l'équipement si la relation n'est pas en cascade
+        equipement = equipementRepository.save(equipement);
+
+        // Ajouter l'équipement au projet
+        project.getEquipements().add(equipement);
+
+        // Sauvegarder le projet
+        project = projectRepository.save(project);
+
+        return project;
     }
 
 }

@@ -54,7 +54,7 @@ public class Equipement {
 
     @Setter
     @Column(nullable = false)
-    private String stockagePlace;
+    private String stockLocation;
 
     @Setter
     @Column
@@ -77,7 +77,7 @@ public class Equipement {
         this.type = type;
         this.condition = condition;
         this.stock = stock;
-        this.stockagePlace = stockLocation;
+        this.stockLocation = stockLocation;
         this.dateAcquisition = acquisitionDate;
         this.dateLastRevision = lastRevision;
     }

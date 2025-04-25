@@ -16,7 +16,7 @@ public record EquipementDTO(
     String type,
     EquipementCondition condition,
     int stock,
-    String stockage,
+    String stockLocation,
     LocalDate acquisitionDate,
     LocalDate lastRevision
 ) {
@@ -32,7 +32,7 @@ public record EquipementDTO(
             equipement.getType(),
             equipement.getCondition(),
             equipement.getStock(),
-            equipement.getStockagePlace(),
+            equipement.getStockLocation(),
             equipement.getDateAcquisition(),
             equipement.getDateLastRevision()
         );

@@ -79,7 +79,7 @@ public class EquipementServiceImpl implements EquipementService {
         updatedEquipement.setCondition(equipement.getCondition());
         updatedEquipement.setDateLastRevision(equipement.getDateLastRevision());
         updatedEquipement.setStock(equipement.getStock());
-        updatedEquipement.setStockagePlace(equipement.getStockagePlace());
+        updatedEquipement.setStockLocation(equipement.getStockLocation());
 
         RentingCompany owner = equipement.getOwner();
         if (owner != null && owner.getName() != null) {

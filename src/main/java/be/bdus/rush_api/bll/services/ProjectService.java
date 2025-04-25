@@ -1,6 +1,8 @@
 package be.bdus.rush_api.bll.services;
 
 import be.bdus.rush_api.api.models.employee.forms.EmployeeForm;
+import be.bdus.rush_api.api.models.equipement.dtos.EquipementDTO;
+import be.bdus.rush_api.api.models.equipement.forms.EquipementForm;
 import be.bdus.rush_api.api.models.project.forms.ProjectCreationForm;
 import be.bdus.rush_api.api.models.stage.forms.StageCreationForm;
 import be.bdus.rush_api.dl.entities.Project;
@@ -49,5 +51,7 @@ public interface ProjectService {
     Page<Project> getOpenProjectsByResponsableId(Pageable pageable, Long id);
 
     Page<Project> getClosedProjectsByResponsableId(Pageable pageable, Long id);
+
+    Project addEquipmentToProject(Long projectId, EquipementForm equipementForm);
 
 }
