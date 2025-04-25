@@ -45,7 +45,7 @@ public class Project {
     private User responsable;
 
     @Setter
-    @ManyToMany
+    @ManyToMany()
     private List<Employee> employes;
 
     @Setter

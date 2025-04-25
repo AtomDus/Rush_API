@@ -45,7 +45,7 @@ public class Employee {
     private List<ProductionCompany> productionCompanies;
 
     @Setter
-    @OneToMany
+    @ManyToMany()
     private List<Project> projects;
 
     @Setter
@@ -59,5 +59,11 @@ public class Employee {
         this.phoneNumber = phoneNumber;
         this.jobTitle = jobTitle;
         this.available = isAvailable;
+    }
+
+    public Employee(String firstname, String lastname, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
     }
 }

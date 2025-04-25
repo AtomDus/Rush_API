@@ -49,8 +49,10 @@ public class DataInitializer implements CommandLineRunner {
         loadLocationCompanies();
         loadProductionCompanies();
         loadUsers();
+        loadEmployees();
         loadEquipements();
         loadStagesAndProjects();
+
     }
 
     private void loadLocationCompanies() {
@@ -68,6 +70,32 @@ public class DataInitializer implements CommandLineRunner {
             ProductionCompany prod2 = new ProductionCompany("CinéLight", "89 Boulevard des Films", "1000", "Bruxelles", "Belgique", "322334455", "contact@cinelight.be");
 
             productionCompanyRepository.saveAll(List.of(prod1, prod2));
+        }
+    }
+
+    private void loadEmployees() {
+        if (employeeRepository.count() == 0) {
+            Employee employee1 = new Employee("Jean", "Dupont", "jean.dupont@mail.com");
+            employee1.setPhoneNumber("123456789");
+            employee1.setJobTitle("Chef de projet");
+            employee1.setAvailable(true);
+
+            Employee employee2 = new Employee("Marie", "Curie", "marie.curie@mail.com");
+            employee2.setPhoneNumber("987654321");
+            employee2.setJobTitle("Technicienne");
+            employee2.setAvailable(true);
+
+            Employee employee3 = new Employee("Paul", "Verlaine", "paul.v@mail.com");
+            employee3.setPhoneNumber("667788990");
+            employee3.setJobTitle("Assistant plateau");
+            employee3.setAvailable(true);
+
+            Employee employee4 = new Employee("Claire", "Beauvoir", "claire.b@mail.com");
+            employee4.setPhoneNumber("445566778");
+            employee4.setJobTitle("Directrice artistique");
+            employee4.setAvailable(true);
+
+            employeeRepository.saveAll(List.of(employee1, employee2, employee3, employee4));
         }
     }
 
