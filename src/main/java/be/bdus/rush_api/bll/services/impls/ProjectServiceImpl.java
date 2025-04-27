@@ -220,11 +220,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project addEquipmentToProject(Long projectId, EquipementForm equipementForm) {
-        // Récupérer le projet depuis la base de données
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
 
-        // Créer un nouvel équipement à partir du DTO
+
         Equipement equipement = new Equipement();
         equipement.setName(equipementForm.name());
         equipement.setDescription(equipementForm.description());
@@ -236,13 +235,10 @@ public class ProjectServiceImpl implements ProjectService {
         equipement.setDateAcquisition(LocalDate.now());
         equipement.setSerialNumber(equipementForm.serialNumber());
 
-        // Sauvegarder l'équipement si la relation n'est pas en cascade
         equipement = equipementRepository.save(equipement);
 
-        // Ajouter l'équipement au projet
         project.getEquipements().add(equipement);
 
-        // Sauvegarder le projet
         project = projectRepository.save(project);
 
         return project;

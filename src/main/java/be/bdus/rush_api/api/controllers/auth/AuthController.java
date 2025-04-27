@@ -37,6 +37,7 @@ public class AuthController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterForm form) {
+
         authService.register(form.toUser());
         return ResponseEntity.noContent().build();
     }

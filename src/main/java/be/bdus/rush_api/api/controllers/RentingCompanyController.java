@@ -54,7 +54,7 @@ public class RentingCompanyController {
 
     @Operation(summary = "Listing companies by name", description = "Let the user search an company with its name")
     //@PreAuthorize("isAuthenticated()")
-    @GetMapping("/name/{name}")
+    @GetMapping("/name")
     public ResponseEntity<CompanyDTO> getByName(@RequestParam String name) {
         return locationService.findByName(name)
                 .map(company -> ResponseEntity.ok(CompanyDTO.fromCompany(company)))
@@ -62,7 +62,7 @@ public class RentingCompanyController {
     }
 
     @Operation(summary = "Listing companies by project id", description = "Let the user search an company with its project id")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/projects/{id}/locations")
     public ResponseEntity<CustomPage<CompanyDTO>> getLocationCompaniesByProjectId(
             @PathVariable Long id,
@@ -84,14 +84,14 @@ public class RentingCompanyController {
     }
 
     @Operation(summary = "Adding a new company", description = "Use to add a new company")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public ResponseEntity<CompanyDTO> save(@RequestBody RCompanyForm locationCompany) {
         return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.save(locationCompany.toCompany())));
     }
 
     @Operation(summary = "Deleting a company", description = "Use to delete a company")
-    // @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         locationService.delete(id);
@@ -99,7 +99,7 @@ public class RentingCompanyController {
     }
 
     @Operation(summary = "Updating a company", description = "Use to update a company")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @PutMapping("/update/{id}")
     public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody RCompanyForm locationCompany) {
         return ResponseEntity.ok(CompanyDTO.fromCompany(locationService.update(locationCompany.toCompany(), id)));

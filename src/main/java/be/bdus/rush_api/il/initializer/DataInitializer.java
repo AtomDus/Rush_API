@@ -101,6 +101,12 @@ public class DataInitializer implements CommandLineRunner {
 
     private void loadUsers() {
         if (userRepository.count() == 0) {
+            User Barnabe = new User("Barna", "Barnabé", "Dussart", "dussart.barnabe@gmail.com", passwordEncoder.encode("test"));
+            Barnabe.setPhoneNumber("+32488842292");
+            Barnabe.setJobTitle("Dev");
+            Barnabe.setAvailable(true);
+            Barnabe.setStatus(EmployeStatus.ACTIVE);
+            Barnabe.setRole(UserRole.ADMIN);
             User user1 = new User("JeaDup", "Jean", "Dupont", "jean.dupont@mail.com", passwordEncoder.encode("pass123"));
             user1.setPhoneNumber("123456789");
             user1.setJobTitle("Chef de projet");
@@ -129,7 +135,7 @@ public class DataInitializer implements CommandLineRunner {
             user4.setStatus(EmployeStatus.ACTIVE);
             user4.setRole(UserRole.USER);
 
-            userRepository.saveAll(List.of(user1, user2, user3, user4));
+            userRepository.saveAll(List.of(Barnabe, user1, user2, user3, user4));
         }
     }
 

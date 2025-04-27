@@ -33,7 +33,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/projects")
 
-//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "project", description = "Endpoints use for projects")
 public class ProjectController {
 
@@ -66,7 +66,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Adding a project", description = "Use to add a project")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public ResponseEntity<ProjectDTO> save(@RequestBody ProjectCreationForm form) {
         Project savedProject = projectService.saveFromForm(form);
@@ -74,7 +74,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project", description = "Use to update a project")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDTO> update(@RequestBody ProjectCreationForm form, @PathVariable Long id) {
         Project savedProject = projectService.updateFromForm(form, id);
@@ -82,7 +82,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Deleting a project", description = "Use to delete a project")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         projectService.delete(id);
@@ -90,7 +90,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Updating a project status", description = "Set status to closed")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('STAFF')")
+    //@PreAuthorize("isAuthenticated()")
     @PutMapping
     public ResponseEntity<Void> updateProjectStatus(@PathVariable Long id) {
         projectService.updateProjectStatus(id);
@@ -98,6 +98,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Adding a stage to a project", description = "Use to add a stage to a project")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/stages")
     public ResponseEntity<ProjectDTO> addStageToProject(
             @PathVariable Long id,
@@ -108,6 +109,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Removing a stage from a project", description = "Use to remove a stage from a project")
+    //@PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{projectId}/stages/{stageId}")
     public ResponseEntity<ProjectDTO> removeStageFromProject(
             @PathVariable Long projectId,
@@ -118,6 +120,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Add an employee to a project", description = "Provide employee details")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/employes")
     public ResponseEntity<ProjectDTO> addEmployeToProject(
             @PathVariable Long id,
@@ -128,6 +131,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Add an equipment to a project", description = "Provide equipment details")
+    //@PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/equipements")
     public ResponseEntity<ProjectDTO> addEquipmentToProject(
             @PathVariable Long id,
@@ -138,6 +142,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all pending projects", description = "Use to list all pending projects")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/pending")
     public ResponseEntity<CustomPage<ProjectDTO>> getPendingProjects(
             @RequestParam(defaultValue = "1") int page,
@@ -159,6 +164,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all open projects", description = "Use to list all open projects")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/open")
     public ResponseEntity<CustomPage<ProjectDTO>> getOpenProjects(
             @RequestParam(defaultValue = "1") int page,
@@ -179,6 +185,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all closed projects", description = "Use to list all closed projects")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/closed")
     public ResponseEntity<CustomPage<ProjectDTO>> getClosedProjects(
             @RequestParam(defaultValue = "1") int page,
@@ -199,6 +206,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all projects by responsable", description = "Use to list all projects by responsable")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/by-responsable/{id}")
     public ResponseEntity<Page<ProjectDTO>> getByResponsable(
             @PathVariable Long id,
@@ -206,28 +214,23 @@ public class ProjectController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
 
-        // Assurer une gestion correcte de la pagination et du tri
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
 
-        // Récupérer la page de projets par responsable
         Page<Project> projectPage = projectService.getProjectsByResponsableId(pageable, id);
 
-        // Convertir la page de projets en une page de ProjectDTO
         Page<ProjectDTO> projectDTOPage = projectPage.map(ProjectDTO::fromProject);
 
-        // Retourner la page de ProjectDTO
         return ResponseEntity.ok(projectDTOPage);
     }
 
     @Operation(summary = "Listing all pending projects by responsable", description = "Use to list all pending projects by responsable")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/by-responsable/{id}/pending")
     public ResponseEntity<CustomPage<ProjectDTO>> getPendingByResponsable(
             @PathVariable Long id,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort) {
-
-
 
         Page<Project> projects = projectService.getPendingProjectsByResponsableId(
                 PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, sort)), id
@@ -240,6 +243,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all open projects by responsable", description = "Use to list all open projects by responsable")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/by-responsable/{id}/open")
     public ResponseEntity<CustomPage<ProjectDTO>> getOpenByResponsable(
             @PathVariable Long id,
@@ -258,6 +262,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Listing all closed projects by responsable", description = "Use to list all closed projects by responsable")
+    //@PreAuthorize("isAuthenticated()")
     @GetMapping("/by-responsable/{id}/closed")
     public ResponseEntity<CustomPage<ProjectDTO>> getClosedByResponsable(
             @PathVariable Long id,
